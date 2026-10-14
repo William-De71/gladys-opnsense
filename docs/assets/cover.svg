@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="534" viewBox="0 0 800 534">
+  <!-- Cover of the OPNsense integration for Gladys Assistant (illustration,
+       not the OPNsense logo). Built into cover.jpg by scripts/build-cover.sh. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#141b26"/>
+      <stop offset="1" stop-color="#1f2a3a"/>
+    </linearGradient>
+    <linearGradient id="box" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a4558"/>
+      <stop offset="1" stop-color="#262f3e"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f26a1b"/>
+      <stop offset="1" stop-color="#c94b06"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#f26a1b" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#f26a1b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="534" fill="url(#bg)"/>
+
+  <!-- faint network grid -->
+  <g stroke="#2c3a4f" stroke-width="1">
+    <path d="M0 89 H800 M0 178 H800 M0 267 H800 M0 356 H800 M0 445 H800"/>
+    <path d="M100 0 V534 M200 0 V534 M300 0 V534 M400 0 V534 M500 0 V534 M600 0 V534 M700 0 V534"/>
+  </g>
+
+  <!-- internet cloud, left -->
+  <g transform="translate(110 150)" fill="none" stroke="#7fb3ff" stroke-width="5" stroke-linejoin="round">
+    <path d="M-50 30 a32 32 0 0 1 6 -63 a42 42 0 0 1 80 -6 a30 30 0 0 1 30 40 a26 26 0 0 1 -10 29 z" fill="#1b2a44"/>
+  </g>
+  <text x="110" y="232" fill="#7fb3ff" font-family="DejaVu Sans, Arial, sans-serif" font-size="20" text-anchor="middle">WAN</text>
+
+  <!-- links -->
+  <g fill="none" stroke-width="6" stroke-linecap="round">
+    <path d="M170 160 C 240 160, 250 250, 318 250" stroke="#7fb3ff"/>
+    <path d="M482 250 C 560 250, 570 160, 640 160" stroke="#58c98b"/>
+    <path d="M482 280 C 560 280, 570 380, 640 380" stroke="#58c98b"/>
+  </g>
+  <g fill="#58c98b">
+    <circle cx="560" cy="205" r="7"/>
+    <circle cx="560" cy="330" r="7"/>
+  </g>
+
+  <!-- the firewall appliance -->
+  <circle cx="400" cy="265" r="150" fill="url(#glow)"/>
+  <rect x="318" y="210" width="164" height="110" rx="14" fill="url(#box)" stroke="#55627a" stroke-width="3"/>
+  <g fill="#0f1520">
+    <rect x="334" y="290" width="18" height="14" rx="2"/>
+    <rect x="358" y="290" width="18" height="14" rx="2"/>
+    <rect x="382" y="290" width="18" height="14" rx="2"/>
+    <rect x="406" y="290" width="18" height="14" rx="2"/>
+  </g>
+  <g>
+    <circle cx="440" cy="297" r="4" fill="#58c98b"/>
+    <circle cx="455" cy="297" r="4" fill="#58c98b"/>
+    <circle cx="470" cy="297" r="4" fill="#f2c94c"/>
+  </g>
+  <!-- shield on the appliance -->
+  <path d="M400 182 l42 16 v30 c0 30 -18 50 -42 60 c-24 -10 -42 -30 -42 -60 v-30 z" fill="url(#shield)" stroke="#ffd9bf" stroke-width="3"/>
+  <path d="M382 232 l13 13 l25 -27" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- the home (Gladys), right top -->
+  <g transform="translate(690 160)">
+    <path d="M-44 4 L0 -36 L44 4" fill="none" stroke="#58c98b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="-32" y="0" width="64" height="44" rx="6" fill="#1b3a2e" stroke="#58c98b" stroke-width="5"/>
+    <rect x="-9" y="18" width="18" height="26" rx="3" fill="#58c98b"/>
+  </g>
+  <!-- devices on the network, right bottom -->
+  <g transform="translate(690 380)" fill="#1b3a2e" stroke="#58c98b" stroke-width="5">
+    <rect x="-46" y="-26" width="52" height="36" rx="5"/>
+    <rect x="18" y="-34" width="28" height="50" rx="6"/>
+    <path d="M-30 22 h20" stroke-linecap="round"/>
+  </g>
+
+  <!-- title -->
+  <text x="400" y="430" fill="#ffffff" font-family="DejaVu Sans, Arial, sans-serif" font-size="58" font-weight="bold" text-anchor="middle">OPNsense</text>
+  <text x="400" y="478" fill="#c8d3e3" font-family="DejaVu Sans, Arial, sans-serif" font-size="26" text-anchor="middle">for Gladys Assistant</text>
+</svg>

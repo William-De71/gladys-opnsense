@@ -1,0 +1,613 @@
+{
+  "version": "0.1.0",
+  "devices": {
+    "firewall": {
+      "external_id": "ext:opnsense:firewall:main",
+      "should_poll": false,
+      "params": ["OPNSENSE_VERSION"],
+      "features": [
+        {
+          "external_id": "ext:opnsense:firewall:main:cpu",
+          "category": "level-sensor",
+          "type": "decimal",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:opnsense:firewall:main:memory",
+          "category": "level-sensor",
+          "type": "decimal",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:opnsense:firewall:main:disk",
+          "category": "level-sensor",
+          "type": "decimal",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:opnsense:firewall:main:temperature",
+          "category": "device-temperature-sensor",
+          "type": "decimal",
+          "unit": "celsius",
+          "min": 0,
+          "max": 120,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:opnsense:firewall:main:uptime",
+          "category": "duration",
+          "type": "decimal",
+          "unit": "days",
+          "min": 0,
+          "max": 10000,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:opnsense:firewall:main:updates",
+          "category": "counter-sensor",
+          "type": "integer",
+          "min": 0,
+          "max": 10000,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:opnsense:firewall:main:version",
+          "category": "text",
+          "type": "text",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:opnsense:firewall:main:vpn_peers",
+          "category": "counter-sensor",
+          "type": "integer",
+          "min": 0,
+          "max": 10000,
+          "read_only": true,
+          "has_feedback": false
+        }
+      ]
+    },
+    "gateway": {
+      "external_id": "ext:opnsense:gateway:WAN_DHCP",
+      "should_poll": false,
+      "params": ["OPNSENSE_GATEWAY"],
+      "features": [
+        {
+          "external_id": "ext:opnsense:gateway:WAN_DHCP:status",
+          "category": "text",
+          "type": "text",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:opnsense:gateway:WAN_DHCP:delay",
+          "category": "duration",
+          "type": "decimal",
+          "unit": "milliseconds",
+          "min": 0,
+          "max": 10000,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:opnsense:gateway:WAN_DHCP:loss",
+          "category": "level-sensor",
+          "type": "decimal",
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "read_only": true,
+          "has_feedback": false
+        }
+      ]
+    },
+    "interface": {
+      "external_id": "ext:opnsense:interface:wan",
+      "should_poll": false,
+      "params": ["OPNSENSE_INTERFACE"],
+      "features": [
+        {
+          "external_id": "ext:opnsense:interface:wan:received",
+          "category": "datarate",
+          "type": "rate",
+          "unit": "megabits-per-second",
+          "min": 0,
+          "max": 100000,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:opnsense:interface:wan:sent",
+          "category": "datarate",
+          "type": "rate",
+          "unit": "megabits-per-second",
+          "min": 0,
+          "max": 100000,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:opnsense:interface:wan:status",
+          "category": "text",
+          "type": "text",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": false
+        },
+        {
+          "external_id": "ext:opnsense:interface:wan:ipv4",
+          "category": "text",
+          "type": "text",
+          "min": 0,
+          "max": 0,
+          "read_only": true,
+          "has_feedback": false
+        }
+      ]
+    },
+    "rule": {
+      "external_id": "ext:opnsense:rule:6f1c2a8e-3b4d-4e5f-9a0b-1c2d3e4f5a6b",
+      "should_poll": false,
+      "params": ["OPNSENSE_RULE"],
+      "features": [
+        {
+          "external_id": "ext:opnsense:rule:6f1c2a8e-3b4d-4e5f-9a0b-1c2d3e4f5a6b:enabled",
+          "category": "switch",
+          "type": "binary",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true
+        }
+      ]
+    },
+    "host": {
+      "external_id": "ext:opnsense:host:a483e7123456",
+      "should_poll": false,
+      "params": ["MAC", "VENDOR"],
+      "features": [
+        {
+          "external_id": "ext:opnsense:host:a483e7123456:presence",
+          "category": "presence-sensor",
+          "type": "push",
+          "min": 0,
+          "max": 1,
+          "read_only": true,
+          "has_feedback": false
+        }
+      ]
+    }
+  },
+  "manifest": {
+    "config_schema": [
+      {
+        "key": "intro",
+        "type": "section"
+      },
+      {
+        "key": "url",
+        "type": "string"
+      },
+      {
+        "key": "api_key",
+        "type": "string"
+      },
+      {
+        "key": "api_secret",
+        "type": "secret"
+      },
+      {
+        "key": "verify_tls",
+        "type": "boolean"
+      },
+      {
+        "key": "options_intro",
+        "type": "section"
+      },
+      {
+        "key": "poll_interval",
+        "type": "number"
+      },
+      {
+        "key": "network_devices",
+        "type": "select"
+      },
+      {
+        "key": "absence_delay",
+        "type": "number"
+      },
+      {
+        "key": "rule_category",
+        "type": "string"
+      },
+      {
+        "key": "language",
+        "type": "select"
+      }
+    ],
+    "actions": ["test_connection", "forget_network_devices"],
+    "scene_triggers": [
+      {
+        "key": "gateway_status_changed",
+        "fields": [
+          {
+            "key": "device",
+            "options": []
+          },
+          {
+            "key": "status",
+            "options": ["online", "degraded", "offline"]
+          }
+        ],
+        "variables": [
+          {
+            "key": "device_name",
+            "type": "string"
+          },
+          {
+            "key": "gateway",
+            "type": "string"
+          },
+          {
+            "key": "status",
+            "type": "string"
+          },
+          {
+            "key": "previous_status",
+            "type": "string"
+          },
+          {
+            "key": "delay",
+            "type": "number"
+          },
+          {
+            "key": "loss",
+            "type": "number"
+          },
+          {
+            "key": "summary",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "network_device_presence",
+        "fields": [
+          {
+            "key": "device",
+            "options": []
+          },
+          {
+            "key": "event",
+            "options": ["arrived", "left"]
+          }
+        ],
+        "variables": [
+          {
+            "key": "device_name",
+            "type": "string"
+          },
+          {
+            "key": "event",
+            "type": "string"
+          },
+          {
+            "key": "mac",
+            "type": "string"
+          },
+          {
+            "key": "ip",
+            "type": "string"
+          },
+          {
+            "key": "summary",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "new_network_device",
+        "fields": [
+          {
+            "key": "interface",
+            "options": []
+          }
+        ],
+        "variables": [
+          {
+            "key": "mac",
+            "type": "string"
+          },
+          {
+            "key": "ip",
+            "type": "string"
+          },
+          {
+            "key": "hostname",
+            "type": "string"
+          },
+          {
+            "key": "vendor",
+            "type": "string"
+          },
+          {
+            "key": "interface",
+            "type": "string"
+          },
+          {
+            "key": "summary",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "vpn_peer_changed",
+        "fields": [
+          {
+            "key": "state",
+            "options": ["connected", "disconnected"]
+          },
+          {
+            "key": "peer",
+            "options": []
+          }
+        ],
+        "variables": [
+          {
+            "key": "peer",
+            "type": "string"
+          },
+          {
+            "key": "interface",
+            "type": "string"
+          },
+          {
+            "key": "state",
+            "type": "string"
+          },
+          {
+            "key": "endpoint",
+            "type": "string"
+          },
+          {
+            "key": "summary",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "service_state_changed",
+        "fields": [
+          {
+            "key": "service",
+            "options": []
+          },
+          {
+            "key": "state",
+            "options": ["started", "stopped"]
+          }
+        ],
+        "variables": [
+          {
+            "key": "service",
+            "type": "string"
+          },
+          {
+            "key": "description",
+            "type": "string"
+          },
+          {
+            "key": "state",
+            "type": "string"
+          },
+          {
+            "key": "summary",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "firmware_update_available",
+        "fields": [],
+        "variables": [
+          {
+            "key": "current_version",
+            "type": "string"
+          },
+          {
+            "key": "new_version",
+            "type": "string"
+          },
+          {
+            "key": "updates",
+            "type": "number"
+          },
+          {
+            "key": "reboot",
+            "type": "boolean"
+          },
+          {
+            "key": "summary",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "scene_actions": [
+      {
+        "key": "get_status",
+        "fields": [],
+        "outputs": [
+          {
+            "key": "cpu",
+            "type": "number"
+          },
+          {
+            "key": "memory",
+            "type": "number"
+          },
+          {
+            "key": "disk",
+            "type": "number"
+          },
+          {
+            "key": "temperature",
+            "type": "number"
+          },
+          {
+            "key": "uptime_days",
+            "type": "number"
+          },
+          {
+            "key": "gateways_online",
+            "type": "number"
+          },
+          {
+            "key": "gateways_offline",
+            "type": "number"
+          },
+          {
+            "key": "devices_present",
+            "type": "number"
+          },
+          {
+            "key": "vpn_peers_online",
+            "type": "number"
+          },
+          {
+            "key": "updates",
+            "type": "number"
+          },
+          {
+            "key": "version",
+            "type": "string"
+          },
+          {
+            "key": "summary",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "wake_on_lan",
+        "fields": ["device", "mac", "interface"],
+        "outputs": [
+          {
+            "key": "mac",
+            "type": "string"
+          },
+          {
+            "key": "interface",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "alias_address",
+        "fields": ["alias", "operation", "device", "address"],
+        "outputs": [
+          {
+            "key": "alias",
+            "type": "string"
+          },
+          {
+            "key": "address",
+            "type": "string"
+          },
+          {
+            "key": "operation",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "restart_service",
+        "fields": ["service"],
+        "outputs": [
+          {
+            "key": "service",
+            "type": "string"
+          },
+          {
+            "key": "running",
+            "type": "boolean"
+          }
+        ]
+      },
+      {
+        "key": "check_updates",
+        "fields": [],
+        "outputs": [
+          {
+            "key": "updates",
+            "type": "number"
+          },
+          {
+            "key": "current_version",
+            "type": "string"
+          },
+          {
+            "key": "new_version",
+            "type": "string"
+          },
+          {
+            "key": "summary",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "key": "reboot",
+        "fields": [],
+        "outputs": []
+      }
+    ],
+    "widgets": [
+      {
+        "key": "overview",
+        "settings": [],
+        "options": {}
+      },
+      {
+        "key": "internet",
+        "settings": ["gateway", "interface", "interval"],
+        "options": {
+          "interval": ["last-hour", "last-twelve-hours", "last-day", "last-three-days", "last-week"]
+        }
+      },
+      {
+        "key": "network",
+        "settings": ["show"],
+        "options": {
+          "show": ["present", "absent", "all"]
+        }
+      },
+      {
+        "key": "vpn",
+        "settings": [],
+        "options": {}
+      }
+    ]
+  }
+}

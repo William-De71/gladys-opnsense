@@ -1,0 +1,1867 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "OPNsense",
+  "description": {
+    "en": "OPNsense firewall: health, gateways, traffic, presence on the network, rules, WireGuard, scenes.",
+    "fr": "Pare-feu OPNsense : santé, passerelles, trafic, présence réseau, règles, WireGuard, scènes.",
+    "de": "OPNsense-Firewall: Zustand, Gateways, Verkehr, Anwesenheit im Netz, Regeln, WireGuard, Szenen.",
+    "es": "Cortafuegos OPNsense: estado, puertas de enlace, tráfico, presencia en red, reglas, WireGuard."
+  },
+  "version": "0.1.0",
+  "docker_image": "ghcr.io/william-de71/gladys-opnsense:0.1.0",
+  "gladys_version": ">=5.1.0",
+  "categories": ["network", "security"],
+  "cover_image": "https://raw.githubusercontent.com/William-De71/gladys-opnsense/main/cover.jpg",
+  "transports": ["local"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "OPNsense API key",
+        "fr": "Clé d’API OPNsense",
+        "de": "OPNsense-API-Schlüssel",
+        "es": "Clave de API de OPNsense"
+      },
+      "description": {
+        "en": "In OPNsense, create a dedicated user (System > Access > Users), give it the privileges listed in the documentation, then add an API key: a key.txt file is downloaded with the key and its secret. Everything stays on your network.",
+        "fr": "Dans OPNsense, créez un utilisateur dédié (Système > Accès > Utilisateurs), donnez-lui les droits listés dans la documentation, puis ajoutez une clé d’API : un fichier key.txt est téléchargé avec la clé et son secret. Tout reste sur votre réseau.",
+        "de": "Legen Sie in OPNsense einen eigenen Benutzer an (System > Zugang > Benutzer), geben Sie ihm die in der Dokumentation genannten Rechte und fügen Sie einen API-Schlüssel hinzu: Eine Datei key.txt mit Schlüssel und Geheimnis wird heruntergeladen. Alles bleibt in Ihrem Netzwerk.",
+        "es": "En OPNsense, cree un usuario dedicado (Sistema > Acceso > Usuarios), dele los privilegios indicados en la documentación y añada una clave de API: se descarga un archivo key.txt con la clave y su secreto. Todo se queda en su red."
+      }
+    },
+    {
+      "key": "url",
+      "type": "string",
+      "label": {
+        "en": "OPNsense address",
+        "fr": "Adresse d’OPNsense",
+        "de": "Adresse von OPNsense",
+        "es": "Dirección de OPNsense"
+      },
+      "description": {
+        "en": "The address of its web interface, with the port if it is not 443.",
+        "fr": "L’adresse de son interface web, avec le port s’il n’est pas 443.",
+        "de": "Die Adresse seiner Weboberfläche, mit dem Port, wenn er nicht 443 ist.",
+        "es": "La dirección de su interfaz web, con el puerto si no es el 443."
+      },
+      "placeholder": {
+        "en": "https://192.168.1.1",
+        "fr": "https://192.168.1.1",
+        "de": "https://192.168.1.1",
+        "es": "https://192.168.1.1"
+      },
+      "required": true
+    },
+    {
+      "key": "api_key",
+      "type": "string",
+      "label": {
+        "en": "API key",
+        "fr": "Clé d’API",
+        "de": "API-Schlüssel",
+        "es": "Clave de API"
+      },
+      "description": {
+        "en": "The “key=” line of key.txt.",
+        "fr": "La ligne « key= » de key.txt.",
+        "de": "Die Zeile „key=“ von key.txt.",
+        "es": "La línea «key=» de key.txt."
+      },
+      "required": true
+    },
+    {
+      "key": "api_secret",
+      "type": "secret",
+      "label": {
+        "en": "API secret",
+        "fr": "Secret de l’API",
+        "de": "API-Geheimnis",
+        "es": "Secreto de la API"
+      },
+      "description": {
+        "en": "The “secret=” line of key.txt.",
+        "fr": "La ligne « secret= » de key.txt.",
+        "de": "Die Zeile „secret=“ von key.txt.",
+        "es": "La línea «secret=» de key.txt."
+      },
+      "required": true
+    },
+    {
+      "key": "verify_tls",
+      "type": "boolean",
+      "label": {
+        "en": "Verify the certificate",
+        "fr": "Vérifier le certificat",
+        "de": "Zertifikat prüfen",
+        "es": "Verificar el certificado"
+      },
+      "description": {
+        "en": "Leave unticked with the self-signed certificate OPNsense ships with. Tick it with a valid certificate (Let’s Encrypt, internal authority).",
+        "fr": "Laissez décoché avec le certificat auto-signé livré avec OPNsense. Cochez-le avec un certificat valide (Let’s Encrypt, autorité interne).",
+        "de": "Mit dem selbstsignierten Zertifikat von OPNsense nicht ankreuzen. Mit einem gültigen Zertifikat (Let’s Encrypt, interne Stelle) ankreuzen.",
+        "es": "Déjelo sin marcar con el certificado autofirmado de OPNsense. Márquelo con un certificado válido (Let’s Encrypt, autoridad interna)."
+      },
+      "default": false,
+      "required": false
+    },
+    {
+      "key": "options_intro",
+      "type": "section",
+      "label": {
+        "en": "Options",
+        "fr": "Options",
+        "de": "Optionen",
+        "es": "Opciones"
+      },
+      "description": {
+        "en": "Firewall rules become switches when they carry the category below. Hosts of the network become presence sensors once you add them on the Discovery screen.",
+        "fr": "Les règles de pare-feu deviennent des interrupteurs quand elles portent la catégorie ci-dessous. Les appareils du réseau deviennent des capteurs de présence une fois ajoutés depuis l’écran de découverte.",
+        "de": "Firewall-Regeln werden zu Schaltern, wenn sie die unten stehende Kategorie tragen. Geräte im Netzwerk werden zu Anwesenheitssensoren, sobald Sie sie im Erkennungsbildschirm hinzufügen.",
+        "es": "Las reglas del cortafuegos se convierten en interruptores cuando llevan la categoría de abajo. Los dispositivos de la red se convierten en sensores de presencia al añadirlos desde la pantalla de descubrimiento."
+      }
+    },
+    {
+      "key": "poll_interval",
+      "type": "number",
+      "label": {
+        "en": "Reading interval (s)",
+        "fr": "Intervalle de lecture (s)",
+        "de": "Leseintervall (s)",
+        "es": "Intervalo de lectura (s)"
+      },
+      "description": {
+        "en": "10 to 300 seconds, 30 by default.",
+        "fr": "De 10 à 300 secondes, 30 par défaut.",
+        "de": "10 bis 300 Sekunden, standardmäßig 30.",
+        "es": "De 10 a 300 segundos, 30 por defecto."
+      },
+      "min": 10,
+      "max": 300,
+      "default": 30,
+      "required": false
+    },
+    {
+      "key": "network_devices",
+      "type": "select",
+      "label": {
+        "en": "Network devices offered",
+        "fr": "Appareils du réseau proposés",
+        "de": "Angebotene Netzwerkgeräte",
+        "es": "Dispositivos de red ofrecidos"
+      },
+      "description": {
+        "en": "Which hosts of the ARP table and the DHCP leases appear on the Discovery screen.",
+        "fr": "Les appareils de la table ARP et des baux DHCP qui apparaissent dans l’écran de découverte.",
+        "de": "Welche Geräte aus ARP-Tabelle und DHCP-Leases im Erkennungsbildschirm erscheinen.",
+        "es": "Qué dispositivos de la tabla ARP y de las concesiones DHCP aparecen en la pantalla de descubrimiento."
+      },
+      "options": [
+        {
+          "value": "named",
+          "label": {
+            "en": "Those with a name",
+            "fr": "Ceux qui ont un nom",
+            "de": "Die mit einem Namen",
+            "es": "Los que tienen nombre"
+          }
+        },
+        {
+          "value": "all",
+          "label": {
+            "en": "All",
+            "fr": "Tous",
+            "de": "Alle",
+            "es": "Todos"
+          }
+        },
+        {
+          "value": "none",
+          "label": {
+            "en": "None",
+            "fr": "Aucun",
+            "de": "Keine",
+            "es": "Ninguno"
+          }
+        }
+      ],
+      "default": "named",
+      "required": false
+    },
+    {
+      "key": "absence_delay",
+      "type": "number",
+      "label": {
+        "en": "Absence delay (min)",
+        "fr": "Délai d’absence (min)",
+        "de": "Abwesenheitsverzögerung (Min.)",
+        "es": "Retardo de ausencia (min)"
+      },
+      "description": {
+        "en": "A device is absent once it has been gone that long. 1 to 60, 5 by default: a phone asleep leaves the network for a while.",
+        "fr": "Un appareil est absent après ce délai sans réponse. De 1 à 60, 5 par défaut : un téléphone en veille quitte le réseau un moment.",
+        "de": "Ein Gerät gilt nach dieser Zeit ohne Antwort als abwesend. 1 bis 60, standardmäßig 5: Ein schlafendes Telefon verlässt das Netz eine Weile.",
+        "es": "Un dispositivo está ausente tras este tiempo sin respuesta. De 1 a 60, 5 por defecto: un teléfono en reposo sale de la red un rato."
+      },
+      "min": 1,
+      "max": 60,
+      "default": 5,
+      "required": false
+    },
+    {
+      "key": "rule_category",
+      "type": "string",
+      "label": {
+        "en": "Category of the rules",
+        "fr": "Catégorie des règles",
+        "de": "Kategorie der Regeln",
+        "es": "Categoría de las reglas"
+      },
+      "description": {
+        "en": "Firewall rules of this category (Firewall > Rules) become switches. Empty: none.",
+        "fr": "Les règles de pare-feu de cette catégorie (Pare-feu > Règles) deviennent des interrupteurs. Vide : aucune.",
+        "de": "Firewall-Regeln dieser Kategorie (Firewall > Regeln) werden zu Schaltern. Leer: keine.",
+        "es": "Las reglas de esta categoría (Cortafuegos > Reglas) se convierten en interruptores. Vacío: ninguna."
+      },
+      "placeholder": {
+        "en": "gladys",
+        "fr": "gladys",
+        "de": "gladys",
+        "es": "gladys"
+      },
+      "default": "gladys",
+      "required": false
+    },
+    {
+      "key": "language",
+      "type": "select",
+      "label": {
+        "en": "Language of the texts",
+        "fr": "Langue des textes",
+        "de": "Sprache der Texte",
+        "es": "Idioma de los textos"
+      },
+      "description": {
+        "en": "Names, states and scene summaries. Automatic: the language of your dashboard, once an OPNsense widget has been displayed.",
+        "fr": "Noms, états et résumés des scènes. Automatique : la langue de votre tableau de bord, dès qu’un widget OPNsense a été affiché.",
+        "de": "Namen, Zustände und Szenen-Zusammenfassungen. Automatisch: die Sprache Ihres Dashboards, sobald ein OPNsense-Widget angezeigt wurde.",
+        "es": "Nombres, estados y resúmenes de escenas. Automático: el idioma de su panel, en cuanto se haya mostrado un widget de OPNsense."
+      },
+      "options": [
+        {
+          "value": "auto",
+          "label": {
+            "en": "Automatic",
+            "fr": "Automatique",
+            "de": "Automatisch",
+            "es": "Automático"
+          }
+        },
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "English",
+            "de": "English",
+            "es": "English"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "Français",
+            "fr": "Français",
+            "de": "Français",
+            "es": "Français"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "Deutsch",
+            "fr": "Deutsch",
+            "de": "Deutsch",
+            "es": "Deutsch"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Español",
+            "fr": "Español",
+            "de": "Español",
+            "es": "Español"
+          }
+        }
+      ],
+      "default": "auto",
+      "required": false
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_connection",
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
+      "description": {
+        "en": "Calls the OPNsense API with the key and shows the version.",
+        "fr": "Appelle l’API d’OPNsense avec la clé et affiche la version.",
+        "de": "Ruft die OPNsense-API mit dem Schlüssel auf und zeigt die Version.",
+        "es": "Llama a la API de OPNsense con la clave y muestra la versión."
+      },
+      "timeout_seconds": 30
+    },
+    {
+      "key": "forget_network_devices",
+      "label": {
+        "en": "Forget known devices",
+        "fr": "Oublier les appareils connus",
+        "de": "Bekannte Geräte vergessen",
+        "es": "Olvidar dispositivos conocidos"
+      },
+      "description": {
+        "en": "The devices on the network now become the reference of the “new device” trigger.",
+        "fr": "Les appareils présents deviennent la référence du déclencheur « nouvel appareil ».",
+        "de": "Die jetzt vorhandenen Geräte werden zur Referenz des Auslösers „neues Gerät“.",
+        "es": "Los dispositivos presentes pasan a ser la referencia del disparador «nuevo dispositivo»."
+      },
+      "timeout_seconds": 10
+    }
+  ],
+  "widgets": [
+    {
+      "key": "overview",
+      "label": {
+        "en": "OPNsense firewall",
+        "fr": "Pare-feu OPNsense",
+        "de": "OPNsense-Firewall",
+        "es": "Cortafuegos OPNsense"
+      },
+      "description": {
+        "en": "CPU, memory, disk, temperature, gateways, uptime, updates, reboot.",
+        "fr": "CPU, mémoire, disque, température, passerelles, mises à jour, redémarrage.",
+        "de": "CPU, Speicher, Festplatte, Temperatur, Gateways, Updates, Neustart.",
+        "es": "CPU, memoria, disco, temperatura, puertas de enlace, actualizaciones."
+      },
+      "icon": "shield",
+      "action_timeout_seconds": 120
+    },
+    {
+      "key": "internet",
+      "label": {
+        "en": "Internet connection",
+        "fr": "Connexion internet",
+        "de": "Internetverbindung",
+        "es": "Conexión a internet"
+      },
+      "description": {
+        "en": "Gateway status, latency, loss, rates and their history.",
+        "fr": "État de la passerelle, latence, perte, débits et leur historique.",
+        "de": "Gateway-Status, Latenz, Verlust, Datenraten und ihr Verlauf.",
+        "es": "Estado de la puerta de enlace, latencia, pérdida, velocidades e historial."
+      },
+      "icon": "globe",
+      "settings": [
+        {
+          "key": "gateway",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Gateway",
+            "fr": "Passerelle",
+            "de": "Gateway",
+            "es": "Puerta de enlace"
+          },
+          "description": {
+            "en": "A gateway device. Empty: the first gateway online.",
+            "fr": "Un appareil passerelle. Vide : la première passerelle en ligne.",
+            "de": "Ein Gateway-Gerät. Leer: das erste Gateway online.",
+            "es": "Un dispositivo puerta de enlace. Vacío: la primera en línea."
+          },
+          "required": false
+        },
+        {
+          "key": "interface",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Interface",
+            "fr": "Interface",
+            "de": "Schnittstelle",
+            "es": "Interfaz"
+          },
+          "description": {
+            "en": "An interface device. Empty: the WAN. The chart needs the device created.",
+            "fr": "Un appareil interface. Vide : le WAN. Le graphique demande l’appareil créé.",
+            "de": "Ein Schnittstellen-Gerät. Leer: das WAN. Das Diagramm braucht das angelegte Gerät.",
+            "es": "Un dispositivo interfaz. Vacío: la WAN. El gráfico necesita el dispositivo creado."
+          },
+          "required": false
+        },
+        {
+          "key": "interval",
+          "type": "select",
+          "label": {
+            "en": "Chart period",
+            "fr": "Période du graphique",
+            "de": "Zeitraum des Diagramms",
+            "es": "Periodo del gráfico"
+          },
+          "options": [
+            {
+              "value": "last-hour",
+              "label": {
+                "en": "Last hour",
+                "fr": "Dernière heure",
+                "de": "Letzte Stunde",
+                "es": "Última hora"
+              }
+            },
+            {
+              "value": "last-twelve-hours",
+              "label": {
+                "en": "Last 12 hours",
+                "fr": "12 dernières heures",
+                "de": "Letzte 12 Stunden",
+                "es": "Últimas 12 horas"
+              }
+            },
+            {
+              "value": "last-day",
+              "label": {
+                "en": "Last 24 hours",
+                "fr": "Dernières 24 heures",
+                "de": "Letzte 24 Stunden",
+                "es": "Últimas 24 horas"
+              }
+            },
+            {
+              "value": "last-three-days",
+              "label": {
+                "en": "Last 3 days",
+                "fr": "3 derniers jours",
+                "de": "Letzte 3 Tage",
+                "es": "Últimos 3 días"
+              }
+            },
+            {
+              "value": "last-week",
+              "label": {
+                "en": "Last 7 days",
+                "fr": "7 derniers jours",
+                "de": "Letzte 7 Tage",
+                "es": "Últimos 7 días"
+              }
+            }
+          ],
+          "default": "last-day",
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "network",
+      "label": {
+        "en": "Network devices",
+        "fr": "Appareils du réseau",
+        "de": "Netzwerkgeräte",
+        "es": "Dispositivos de red"
+      },
+      "description": {
+        "en": "The devices connected now, or the ones that left, with their address.",
+        "fr": "Les appareils connectés en ce moment, ou ceux partis, avec leur adresse.",
+        "de": "Die jetzt verbundenen oder gegangenen Geräte, mit ihrer Adresse.",
+        "es": "Los dispositivos conectados ahora, o los que se fueron, con su dirección."
+      },
+      "icon": "wifi",
+      "settings": [
+        {
+          "key": "show",
+          "type": "select",
+          "label": {
+            "en": "Show",
+            "fr": "Afficher",
+            "de": "Anzeigen",
+            "es": "Mostrar"
+          },
+          "options": [
+            {
+              "value": "present",
+              "label": {
+                "en": "Connected devices",
+                "fr": "Appareils connectés",
+                "de": "Verbundene Geräte",
+                "es": "Dispositivos conectados"
+              }
+            },
+            {
+              "value": "absent",
+              "label": {
+                "en": "Devices that left",
+                "fr": "Appareils partis",
+                "de": "Gegangene Geräte",
+                "es": "Dispositivos que se fueron"
+              }
+            },
+            {
+              "value": "all",
+              "label": {
+                "en": "All known devices",
+                "fr": "Tous les appareils connus",
+                "de": "Alle bekannten Geräte",
+                "es": "Todos los conocidos"
+              }
+            }
+          ],
+          "default": "present",
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "vpn",
+      "label": {
+        "en": "WireGuard VPN",
+        "fr": "VPN WireGuard",
+        "de": "WireGuard-VPN",
+        "es": "VPN WireGuard"
+      },
+      "description": {
+        "en": "The WireGuard peers, connected or not, and their last handshake.",
+        "fr": "Les pairs WireGuard, connectés ou non, et leur dernier échange.",
+        "de": "Die WireGuard-Peers, verbunden oder nicht, und ihr letzter Handshake.",
+        "es": "Los pares WireGuard, conectados o no, y su último contacto."
+      },
+      "icon": "lock"
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "gateway_status_changed",
+      "label": {
+        "en": "OPNsense: gateway status changed",
+        "fr": "OPNsense : état de passerelle changé",
+        "de": "OPNsense: Gateway-Status geändert",
+        "es": "OPNsense: estado de puerta de enlace cambiado"
+      },
+      "description": {
+        "en": "A gateway went offline, degraded (latency, loss) or back online, as dpinger sees it.",
+        "fr": "Une passerelle est passée hors ligne, dégradée (latence, perte) ou de nouveau en ligne, selon dpinger.",
+        "de": "Ein Gateway ging offline, wurde beeinträchtigt (Latenz, Verlust) oder ist wieder online, laut dpinger.",
+        "es": "Una puerta de enlace pasó a sin conexión, degradada (latencia, pérdida) o de nuevo en línea, según dpinger."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          },
+          "description": {
+            "en": "A gateway device. Leave empty for any gateway.",
+            "fr": "Un appareil passerelle. Laissez vide pour toutes.",
+            "de": "Ein Gateway-Gerät. Leer lassen für jedes Gateway.",
+            "es": "Un dispositivo puerta de enlace. Vacío para cualquiera."
+          },
+          "required": false
+        },
+        {
+          "key": "status",
+          "type": "multi_select",
+          "label": {
+            "en": "New status",
+            "fr": "Nouvel état",
+            "de": "Neuer Status",
+            "es": "Nuevo estado"
+          },
+          "description": {
+            "en": "Leave empty for any status.",
+            "fr": "Laissez vide pour tous.",
+            "de": "Leer lassen für jeden Status.",
+            "es": "Déjelo vacío para cualquier estado."
+          },
+          "options": [
+            {
+              "value": "online",
+              "label": {
+                "en": "Online",
+                "fr": "En ligne",
+                "de": "Online",
+                "es": "En línea"
+              }
+            },
+            {
+              "value": "degraded",
+              "label": {
+                "en": "Degraded (latency, loss)",
+                "fr": "Dégradée (latence, perte)",
+                "de": "Beeinträchtigt (Latenz, Verlust)",
+                "es": "Degradada (latencia, pérdida)"
+              }
+            },
+            {
+              "value": "offline",
+              "label": {
+                "en": "Offline",
+                "fr": "Hors ligne",
+                "de": "Offline",
+                "es": "Sin conexión"
+              }
+            }
+          ],
+          "required": false
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Device name",
+            "fr": "Nom de l’appareil",
+            "de": "Gerätename",
+            "es": "Nombre del dispositivo"
+          }
+        },
+        {
+          "key": "gateway",
+          "type": "string",
+          "label": {
+            "en": "Gateway",
+            "fr": "Passerelle",
+            "de": "Gateway",
+            "es": "Puerta de enlace"
+          }
+        },
+        {
+          "key": "status",
+          "type": "string",
+          "label": {
+            "en": "New status",
+            "fr": "Nouvel état",
+            "de": "Neuer Status",
+            "es": "Nuevo estado"
+          },
+          "description": {
+            "en": "online, degraded or offline.",
+            "fr": "online, degraded ou offline.",
+            "de": "online, degraded oder offline.",
+            "es": "online, degraded u offline."
+          }
+        },
+        {
+          "key": "previous_status",
+          "type": "string",
+          "label": {
+            "en": "Previous status",
+            "fr": "État précédent",
+            "de": "Vorheriger Status",
+            "es": "Estado anterior"
+          },
+          "description": {
+            "en": "online, degraded or offline.",
+            "fr": "online, degraded ou offline.",
+            "de": "online, degraded oder offline.",
+            "es": "online, degraded u offline."
+          }
+        },
+        {
+          "key": "delay",
+          "type": "number",
+          "label": {
+            "en": "Latency (ms)",
+            "fr": "Latence (ms)",
+            "de": "Latenz (ms)",
+            "es": "Latencia (ms)"
+          },
+          "description": {
+            "en": "-1 when unknown.",
+            "fr": "-1 si inconnu.",
+            "de": "-1, wenn unbekannt.",
+            "es": "-1 si se desconoce."
+          }
+        },
+        {
+          "key": "loss",
+          "type": "number",
+          "label": {
+            "en": "Packet loss (%)",
+            "fr": "Perte de paquets (%)",
+            "de": "Paketverlust (%)",
+            "es": "Pérdida de paquetes (%)"
+          },
+          "description": {
+            "en": "-1 when unknown.",
+            "fr": "-1 si inconnu.",
+            "de": "-1, wenn unbekannt.",
+            "es": "-1 si se desconoce."
+          }
+        },
+        {
+          "key": "summary",
+          "type": "string",
+          "label": {
+            "en": "Summary",
+            "fr": "Résumé",
+            "de": "Zusammenfassung",
+            "es": "Resumen"
+          },
+          "description": {
+            "en": "A sentence ready to put in a message.",
+            "fr": "Une phrase prête à mettre dans un message.",
+            "de": "Ein fertiger Satz für eine Nachricht.",
+            "es": "Una frase lista para poner en un mensaje."
+          }
+        }
+      ]
+    },
+    {
+      "key": "network_device_presence",
+      "label": {
+        "en": "OPNsense: device arrived or left",
+        "fr": "OPNsense : appareil arrivé ou parti",
+        "de": "OPNsense: Gerät gekommen oder gegangen",
+        "es": "OPNsense: dispositivo llegó o se fue"
+      },
+      "description": {
+        "en": "A device added in Gladys answers on the network again, or has been gone for the absence delay.",
+        "fr": "Un appareil ajouté dans Gladys répond de nouveau sur le réseau, ou n’y répond plus depuis le délai d’absence.",
+        "de": "Ein in Gladys hinzugefügtes Gerät antwortet wieder im Netzwerk oder ist seit der Abwesenheitsverzögerung weg.",
+        "es": "Un dispositivo añadido en Gladys vuelve a responder en la red, o lleva ausente el retardo de ausencia."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          },
+          "description": {
+            "en": "A network device. Leave empty for any.",
+            "fr": "Un appareil du réseau. Laissez vide pour tous.",
+            "de": "Ein Netzwerkgerät. Leer lassen für jedes.",
+            "es": "Un dispositivo de red. Vacío para cualquiera."
+          },
+          "required": false
+        },
+        {
+          "key": "event",
+          "type": "select",
+          "label": {
+            "en": "Event",
+            "fr": "Événement",
+            "de": "Ereignis",
+            "es": "Evento"
+          },
+          "description": {
+            "en": "Leave empty for both.",
+            "fr": "Laissez vide pour les deux.",
+            "de": "Leer lassen für beide.",
+            "es": "Déjelo vacío para ambos."
+          },
+          "options": [
+            {
+              "value": "arrived",
+              "label": {
+                "en": "Arrived",
+                "fr": "Arrivé",
+                "de": "Gekommen",
+                "es": "Llegó"
+              }
+            },
+            {
+              "value": "left",
+              "label": {
+                "en": "Left",
+                "fr": "Parti",
+                "de": "Gegangen",
+                "es": "Se fue"
+              }
+            }
+          ],
+          "required": false
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Device name",
+            "fr": "Nom de l’appareil",
+            "de": "Gerätename",
+            "es": "Nombre del dispositivo"
+          }
+        },
+        {
+          "key": "event",
+          "type": "string",
+          "label": {
+            "en": "Event",
+            "fr": "Événement",
+            "de": "Ereignis",
+            "es": "Evento"
+          },
+          "description": {
+            "en": "arrived or left.",
+            "fr": "arrived ou left.",
+            "de": "arrived oder left.",
+            "es": "arrived o left."
+          }
+        },
+        {
+          "key": "mac",
+          "type": "string",
+          "label": {
+            "en": "MAC address",
+            "fr": "Adresse MAC",
+            "de": "MAC-Adresse",
+            "es": "Dirección MAC"
+          }
+        },
+        {
+          "key": "ip",
+          "type": "string",
+          "label": {
+            "en": "IP address",
+            "fr": "Adresse IP",
+            "de": "IP-Adresse",
+            "es": "Dirección IP"
+          }
+        },
+        {
+          "key": "summary",
+          "type": "string",
+          "label": {
+            "en": "Summary",
+            "fr": "Résumé",
+            "de": "Zusammenfassung",
+            "es": "Resumen"
+          },
+          "description": {
+            "en": "A sentence ready to put in a message.",
+            "fr": "Une phrase prête à mettre dans un message.",
+            "de": "Ein fertiger Satz für eine Nachricht.",
+            "es": "Una frase lista para poner en un mensaje."
+          }
+        }
+      ]
+    },
+    {
+      "key": "new_network_device",
+      "label": {
+        "en": "OPNsense: new device on the network",
+        "fr": "OPNsense : nouvel appareil sur le réseau",
+        "de": "OPNsense: neues Gerät im Netzwerk",
+        "es": "OPNsense: nuevo dispositivo en la red"
+      },
+      "description": {
+        "en": "A MAC address never met before appears in the ARP table or the DHCP leases. Once per address.",
+        "fr": "Une adresse MAC jamais vue apparaît dans la table ARP ou les baux DHCP. Une fois par adresse.",
+        "de": "Eine nie gesehene MAC-Adresse erscheint in der ARP-Tabelle oder den DHCP-Leases. Einmal pro Adresse.",
+        "es": "Una dirección MAC nunca vista aparece en la tabla ARP o en las concesiones DHCP. Una vez por dirección."
+      },
+      "fields": [
+        {
+          "key": "interface",
+          "type": "string",
+          "label": {
+            "en": "Interface",
+            "fr": "Interface",
+            "de": "Schnittstelle",
+            "es": "Interfaz"
+          },
+          "description": {
+            "en": "OPNsense identifier (lan, opt1…). Leave empty for any.",
+            "fr": "Identifiant OPNsense (lan, opt1…). Laissez vide pour toutes.",
+            "de": "OPNsense-Kennung (lan, opt1…). Leer lassen für jede.",
+            "es": "Identificador de OPNsense (lan, opt1…). Vacío para cualquiera."
+          },
+          "placeholder": {
+            "en": "lan",
+            "fr": "lan",
+            "de": "lan",
+            "es": "lan"
+          },
+          "required": false
+        }
+      ],
+      "variables": [
+        {
+          "key": "mac",
+          "type": "string",
+          "label": {
+            "en": "MAC address",
+            "fr": "Adresse MAC",
+            "de": "MAC-Adresse",
+            "es": "Dirección MAC"
+          }
+        },
+        {
+          "key": "ip",
+          "type": "string",
+          "label": {
+            "en": "IP address",
+            "fr": "Adresse IP",
+            "de": "IP-Adresse",
+            "es": "Dirección IP"
+          }
+        },
+        {
+          "key": "hostname",
+          "type": "string",
+          "label": {
+            "en": "Host name",
+            "fr": "Nom d’hôte",
+            "de": "Hostname",
+            "es": "Nombre de host"
+          }
+        },
+        {
+          "key": "vendor",
+          "type": "string",
+          "label": {
+            "en": "Manufacturer",
+            "fr": "Fabricant",
+            "de": "Hersteller",
+            "es": "Fabricante"
+          }
+        },
+        {
+          "key": "interface",
+          "type": "string",
+          "label": {
+            "en": "Interface",
+            "fr": "Interface",
+            "de": "Schnittstelle",
+            "es": "Interfaz"
+          }
+        },
+        {
+          "key": "summary",
+          "type": "string",
+          "label": {
+            "en": "Summary",
+            "fr": "Résumé",
+            "de": "Zusammenfassung",
+            "es": "Resumen"
+          },
+          "description": {
+            "en": "A sentence ready to put in a message.",
+            "fr": "Une phrase prête à mettre dans un message.",
+            "de": "Ein fertiger Satz für eine Nachricht.",
+            "es": "Una frase lista para poner en un mensaje."
+          }
+        }
+      ]
+    },
+    {
+      "key": "vpn_peer_changed",
+      "label": {
+        "en": "OPNsense: VPN peer connected or not",
+        "fr": "OPNsense : pair VPN connecté ou non",
+        "de": "OPNsense: VPN-Peer verbunden oder nicht",
+        "es": "OPNsense: par VPN conectado o no"
+      },
+      "description": {
+        "en": "A WireGuard peer made a handshake again, or has made none for 5 minutes.",
+        "fr": "Un pair WireGuard a de nouveau échangé, ou n’a fait aucun échange depuis 5 minutes.",
+        "de": "Ein WireGuard-Peer hat wieder einen Handshake gemacht oder seit 5 Minuten keinen.",
+        "es": "Un par WireGuard volvió a contactar, o no contacta desde hace 5 minutos."
+      },
+      "fields": [
+        {
+          "key": "state",
+          "type": "select",
+          "label": {
+            "en": "State",
+            "fr": "État",
+            "de": "Zustand",
+            "es": "Estado"
+          },
+          "description": {
+            "en": "Leave empty for both.",
+            "fr": "Laissez vide pour les deux.",
+            "de": "Leer lassen für beide.",
+            "es": "Déjelo vacío para ambos."
+          },
+          "options": [
+            {
+              "value": "connected",
+              "label": {
+                "en": "Connected",
+                "fr": "Connecté",
+                "de": "Verbunden",
+                "es": "Conectado"
+              }
+            },
+            {
+              "value": "disconnected",
+              "label": {
+                "en": "Disconnected",
+                "fr": "Déconnecté",
+                "de": "Getrennt",
+                "es": "Desconectado"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "key": "peer",
+          "type": "string",
+          "label": {
+            "en": "Peer",
+            "fr": "Pair",
+            "de": "Peer",
+            "es": "Par"
+          },
+          "description": {
+            "en": "Its name in OPNsense. Leave empty for any.",
+            "fr": "Son nom dans OPNsense. Laissez vide pour tous.",
+            "de": "Sein Name in OPNsense. Leer lassen für jeden.",
+            "es": "Su nombre en OPNsense. Vacío para cualquiera."
+          },
+          "required": false
+        }
+      ],
+      "variables": [
+        {
+          "key": "peer",
+          "type": "string",
+          "label": {
+            "en": "Peer",
+            "fr": "Pair",
+            "de": "Peer",
+            "es": "Par"
+          }
+        },
+        {
+          "key": "interface",
+          "type": "string",
+          "label": {
+            "en": "WireGuard instance",
+            "fr": "Instance WireGuard",
+            "de": "WireGuard-Instanz",
+            "es": "Instancia WireGuard"
+          }
+        },
+        {
+          "key": "state",
+          "type": "string",
+          "label": {
+            "en": "State",
+            "fr": "État",
+            "de": "Zustand",
+            "es": "Estado"
+          },
+          "description": {
+            "en": "connected or disconnected.",
+            "fr": "connected ou disconnected.",
+            "de": "connected oder disconnected.",
+            "es": "connected o disconnected."
+          }
+        },
+        {
+          "key": "endpoint",
+          "type": "string",
+          "label": {
+            "en": "Endpoint",
+            "fr": "Point d’accès",
+            "de": "Endpunkt",
+            "es": "Punto de acceso"
+          }
+        },
+        {
+          "key": "summary",
+          "type": "string",
+          "label": {
+            "en": "Summary",
+            "fr": "Résumé",
+            "de": "Zusammenfassung",
+            "es": "Resumen"
+          },
+          "description": {
+            "en": "A sentence ready to put in a message.",
+            "fr": "Une phrase prête à mettre dans un message.",
+            "de": "Ein fertiger Satz für eine Nachricht.",
+            "es": "Una frase lista para poner en un mensaje."
+          }
+        }
+      ]
+    },
+    {
+      "key": "service_state_changed",
+      "label": {
+        "en": "OPNsense: service started or stopped",
+        "fr": "OPNsense : service démarré ou arrêté",
+        "de": "OPNsense: Dienst gestartet oder beendet",
+        "es": "OPNsense: servicio iniciado o detenido"
+      },
+      "description": {
+        "en": "A service of Status > Services started or stopped (Unbound, DHCP, VPN…).",
+        "fr": "Un service de Statut > Services a démarré ou s’est arrêté (Unbound, DHCP, VPN…).",
+        "de": "Ein Dienst unter Status > Dienste wurde gestartet oder beendet (Unbound, DHCP, VPN…).",
+        "es": "Un servicio de Estado > Servicios se inició o se detuvo (Unbound, DHCP, VPN…)."
+      },
+      "fields": [
+        {
+          "key": "service",
+          "type": "string",
+          "label": {
+            "en": "Service",
+            "fr": "Service",
+            "de": "Dienst",
+            "es": "Servicio"
+          },
+          "description": {
+            "en": "Its name (unbound, dnsmasq, wireguard…). Leave empty for any.",
+            "fr": "Son nom (unbound, dnsmasq, wireguard…). Laissez vide pour tous.",
+            "de": "Sein Name (unbound, dnsmasq, wireguard…). Leer lassen für jeden.",
+            "es": "Su nombre (unbound, dnsmasq, wireguard…). Vacío para cualquiera."
+          },
+          "placeholder": {
+            "en": "unbound",
+            "fr": "unbound",
+            "de": "unbound",
+            "es": "unbound"
+          },
+          "required": false
+        },
+        {
+          "key": "state",
+          "type": "select",
+          "label": {
+            "en": "State",
+            "fr": "État",
+            "de": "Zustand",
+            "es": "Estado"
+          },
+          "description": {
+            "en": "Leave empty for both.",
+            "fr": "Laissez vide pour les deux.",
+            "de": "Leer lassen für beide.",
+            "es": "Déjelo vacío para ambos."
+          },
+          "options": [
+            {
+              "value": "started",
+              "label": {
+                "en": "Started",
+                "fr": "Démarré",
+                "de": "Gestartet",
+                "es": "Iniciado"
+              }
+            },
+            {
+              "value": "stopped",
+              "label": {
+                "en": "Stopped",
+                "fr": "Arrêté",
+                "de": "Beendet",
+                "es": "Detenido"
+              }
+            }
+          ],
+          "required": false
+        }
+      ],
+      "variables": [
+        {
+          "key": "service",
+          "type": "string",
+          "label": {
+            "en": "Service",
+            "fr": "Service",
+            "de": "Dienst",
+            "es": "Servicio"
+          }
+        },
+        {
+          "key": "description",
+          "type": "string",
+          "label": {
+            "en": "Description",
+            "fr": "Description",
+            "de": "Beschreibung",
+            "es": "Descripción"
+          }
+        },
+        {
+          "key": "state",
+          "type": "string",
+          "label": {
+            "en": "State",
+            "fr": "État",
+            "de": "Zustand",
+            "es": "Estado"
+          },
+          "description": {
+            "en": "started or stopped.",
+            "fr": "started ou stopped.",
+            "de": "started oder stopped.",
+            "es": "started o stopped."
+          }
+        },
+        {
+          "key": "summary",
+          "type": "string",
+          "label": {
+            "en": "Summary",
+            "fr": "Résumé",
+            "de": "Zusammenfassung",
+            "es": "Resumen"
+          },
+          "description": {
+            "en": "A sentence ready to put in a message.",
+            "fr": "Une phrase prête à mettre dans un message.",
+            "de": "Ein fertiger Satz für eine Nachricht.",
+            "es": "Una frase lista para poner en un mensaje."
+          }
+        }
+      ]
+    },
+    {
+      "key": "firmware_update_available",
+      "label": {
+        "en": "OPNsense: update available",
+        "fr": "OPNsense : mise à jour disponible",
+        "de": "OPNsense: Update verfügbar",
+        "es": "OPNsense: actualización disponible"
+      },
+      "description": {
+        "en": "A firmware check (OPNsense runs one every day, or from Gladys) found new updates.",
+        "fr": "Une recherche de mises à jour (quotidienne dans OPNsense, ou lancée depuis Gladys) a trouvé du nouveau.",
+        "de": "Eine Update-Prüfung (täglich in OPNsense oder aus Gladys) hat neue Updates gefunden.",
+        "es": "Una búsqueda de actualizaciones (diaria en OPNsense, o desde Gladys) encontró novedades."
+      },
+      "variables": [
+        {
+          "key": "current_version",
+          "type": "string",
+          "label": {
+            "en": "Current version",
+            "fr": "Version actuelle",
+            "de": "Aktuelle Version",
+            "es": "Versión actual"
+          }
+        },
+        {
+          "key": "new_version",
+          "type": "string",
+          "label": {
+            "en": "New version",
+            "fr": "Nouvelle version",
+            "de": "Neue Version",
+            "es": "Nueva versión"
+          }
+        },
+        {
+          "key": "updates",
+          "type": "number",
+          "label": {
+            "en": "Updates",
+            "fr": "Mises à jour",
+            "de": "Updates",
+            "es": "Actualizaciones"
+          }
+        },
+        {
+          "key": "reboot",
+          "type": "boolean",
+          "label": {
+            "en": "Reboot needed",
+            "fr": "Redémarrage nécessaire",
+            "de": "Neustart nötig",
+            "es": "Reinicio necesario"
+          }
+        },
+        {
+          "key": "summary",
+          "type": "string",
+          "label": {
+            "en": "Summary",
+            "fr": "Résumé",
+            "de": "Zusammenfassung",
+            "es": "Resumen"
+          },
+          "description": {
+            "en": "A sentence ready to put in a message.",
+            "fr": "Une phrase prête à mettre dans un message.",
+            "de": "Ein fertiger Satz für eine Nachricht.",
+            "es": "Una frase lista para poner en un mensaje."
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "get_status",
+      "label": {
+        "en": "OPNsense: read the status",
+        "fr": "OPNsense : lire l’état",
+        "de": "OPNsense: Status lesen",
+        "es": "OPNsense: leer el estado"
+      },
+      "description": {
+        "en": "The state of the firewall, for a message or a condition.",
+        "fr": "L’état du pare-feu, pour un message ou une condition.",
+        "de": "Der Zustand der Firewall, für eine Nachricht oder eine Bedingung.",
+        "es": "El estado del cortafuegos, para un mensaje o una condición."
+      },
+      "timeout_seconds": 30,
+      "outputs": [
+        {
+          "key": "cpu",
+          "type": "number",
+          "label": {
+            "en": "CPU (%)",
+            "fr": "CPU (%)",
+            "de": "CPU (%)",
+            "es": "CPU (%)"
+          },
+          "description": {
+            "en": "-1 when unknown.",
+            "fr": "-1 si inconnu.",
+            "de": "-1, wenn unbekannt.",
+            "es": "-1 si se desconoce."
+          }
+        },
+        {
+          "key": "memory",
+          "type": "number",
+          "label": {
+            "en": "Memory (%)",
+            "fr": "Mémoire (%)",
+            "de": "Speicher (%)",
+            "es": "Memoria (%)"
+          },
+          "description": {
+            "en": "-1 when unknown.",
+            "fr": "-1 si inconnu.",
+            "de": "-1, wenn unbekannt.",
+            "es": "-1 si se desconoce."
+          }
+        },
+        {
+          "key": "disk",
+          "type": "number",
+          "label": {
+            "en": "Disk (%)",
+            "fr": "Disque (%)",
+            "de": "Festplatte (%)",
+            "es": "Disco (%)"
+          },
+          "description": {
+            "en": "-1 when unknown.",
+            "fr": "-1 si inconnu.",
+            "de": "-1, wenn unbekannt.",
+            "es": "-1 si se desconoce."
+          }
+        },
+        {
+          "key": "temperature",
+          "type": "number",
+          "label": {
+            "en": "Temperature (°C)",
+            "fr": "Température (°C)",
+            "de": "Temperatur (°C)",
+            "es": "Temperatura (°C)"
+          },
+          "description": {
+            "en": "-1 when unknown.",
+            "fr": "-1 si inconnu.",
+            "de": "-1, wenn unbekannt.",
+            "es": "-1 si se desconoce."
+          }
+        },
+        {
+          "key": "uptime_days",
+          "type": "number",
+          "label": {
+            "en": "Uptime (days)",
+            "fr": "En marche depuis (jours)",
+            "de": "Betriebszeit (Tage)",
+            "es": "En marcha (días)"
+          },
+          "description": {
+            "en": "-1 when unknown.",
+            "fr": "-1 si inconnu.",
+            "de": "-1, wenn unbekannt.",
+            "es": "-1 si se desconoce."
+          }
+        },
+        {
+          "key": "gateways_online",
+          "type": "number",
+          "label": {
+            "en": "Gateways online",
+            "fr": "Passerelles en ligne",
+            "de": "Gateways online",
+            "es": "Puertas de enlace en línea"
+          }
+        },
+        {
+          "key": "gateways_offline",
+          "type": "number",
+          "label": {
+            "en": "Gateways offline",
+            "fr": "Passerelles hors ligne",
+            "de": "Gateways offline",
+            "es": "Puertas de enlace sin conexión"
+          }
+        },
+        {
+          "key": "devices_present",
+          "type": "number",
+          "label": {
+            "en": "Devices on the network",
+            "fr": "Appareils sur le réseau",
+            "de": "Geräte im Netzwerk",
+            "es": "Dispositivos en la red"
+          }
+        },
+        {
+          "key": "vpn_peers_online",
+          "type": "number",
+          "label": {
+            "en": "VPN peers online",
+            "fr": "Pairs VPN connectés",
+            "de": "Verbundene VPN-Peers",
+            "es": "Pares VPN conectados"
+          }
+        },
+        {
+          "key": "updates",
+          "type": "number",
+          "label": {
+            "en": "Pending updates",
+            "fr": "Mises à jour en attente",
+            "de": "Ausstehende Updates",
+            "es": "Actualizaciones pendientes"
+          },
+          "description": {
+            "en": "-1 when unknown.",
+            "fr": "-1 si inconnu.",
+            "de": "-1, wenn unbekannt.",
+            "es": "-1 si se desconoce."
+          }
+        },
+        {
+          "key": "version",
+          "type": "string",
+          "label": {
+            "en": "Version",
+            "fr": "Version",
+            "de": "Version",
+            "es": "Versión"
+          }
+        },
+        {
+          "key": "summary",
+          "type": "string",
+          "label": {
+            "en": "Summary",
+            "fr": "Résumé",
+            "de": "Zusammenfassung",
+            "es": "Resumen"
+          },
+          "description": {
+            "en": "A sentence ready to put in a message.",
+            "fr": "Une phrase prête à mettre dans un message.",
+            "de": "Ein fertiger Satz für eine Nachricht.",
+            "es": "Una frase lista para poner en un mensaje."
+          }
+        }
+      ]
+    },
+    {
+      "key": "wake_on_lan",
+      "label": {
+        "en": "OPNsense: wake a device (WoL)",
+        "fr": "OPNsense : réveiller un appareil (WoL)",
+        "de": "OPNsense: Gerät wecken (WoL)",
+        "es": "OPNsense: despertar un dispositivo (WoL)"
+      },
+      "description": {
+        "en": "OPNsense sends the magic packet on the right network, VLANs included. Needs the os-wol plugin.",
+        "fr": "OPNsense envoie le paquet magique sur le bon réseau, VLAN compris. Demande le plugin os-wol.",
+        "de": "OPNsense sendet das Magic Packet ins richtige Netz, auch VLANs. Braucht das Plugin os-wol.",
+        "es": "OPNsense envía el paquete mágico a la red correcta, VLAN incluidas. Requiere el plugin os-wol."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          },
+          "description": {
+            "en": "A network device. Or type its MAC address below.",
+            "fr": "Un appareil du réseau. Ou saisissez son adresse MAC ci-dessous.",
+            "de": "Ein Netzwerkgerät. Oder geben Sie unten seine MAC-Adresse ein.",
+            "es": "Un dispositivo de red. O escriba su dirección MAC abajo."
+          },
+          "required": false
+        },
+        {
+          "key": "mac",
+          "type": "string",
+          "label": {
+            "en": "MAC address",
+            "fr": "Adresse MAC",
+            "de": "MAC-Adresse",
+            "es": "Dirección MAC"
+          },
+          "placeholder": {
+            "en": "aa:bb:cc:dd:ee:ff",
+            "fr": "aa:bb:cc:dd:ee:ff",
+            "de": "aa:bb:cc:dd:ee:ff",
+            "es": "aa:bb:cc:dd:ee:ff"
+          },
+          "required": false
+        },
+        {
+          "key": "interface",
+          "type": "string",
+          "label": {
+            "en": "Interface",
+            "fr": "Interface",
+            "de": "Schnittstelle",
+            "es": "Interfaz"
+          },
+          "description": {
+            "en": "OPNsense identifier (lan, opt1…). Empty: where the device was last seen.",
+            "fr": "Identifiant OPNsense (lan, opt1…). Vide : là où l’appareil a été vu.",
+            "de": "OPNsense-Kennung (lan, opt1…). Leer: wo das Gerät zuletzt gesehen wurde.",
+            "es": "Identificador de OPNsense (lan, opt1…). Vacío: donde se vio el dispositivo."
+          },
+          "required": false
+        }
+      ],
+      "outputs": [
+        {
+          "key": "mac",
+          "type": "string",
+          "label": {
+            "en": "MAC address",
+            "fr": "Adresse MAC",
+            "de": "MAC-Adresse",
+            "es": "Dirección MAC"
+          }
+        },
+        {
+          "key": "interface",
+          "type": "string",
+          "label": {
+            "en": "Interface",
+            "fr": "Interface",
+            "de": "Schnittstelle",
+            "es": "Interfaz"
+          }
+        }
+      ]
+    },
+    {
+      "key": "alias_address",
+      "label": {
+        "en": "OPNsense: add or remove in an alias",
+        "fr": "OPNsense : ajouter ou retirer d’un alias",
+        "de": "OPNsense: in Alias hinzufügen oder entfernen",
+        "es": "OPNsense: añadir o quitar de un alias"
+      },
+      "description": {
+        "en": "Puts an address in a Host or Network alias used by a rule: block a device at night, open a VPN.",
+        "fr": "Met une adresse dans un alias Hôte ou Réseau utilisé par une règle : bloquer un appareil la nuit, ouvrir un VPN.",
+        "de": "Setzt eine Adresse in einen Host- oder Netzwerk-Alias einer Regel: ein Gerät nachts sperren, ein VPN öffnen.",
+        "es": "Pone una dirección en un alias Host o Red usado por una regla: bloquear un dispositivo de noche, abrir una VPN."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "alias",
+          "type": "string",
+          "label": {
+            "en": "Alias",
+            "fr": "Alias",
+            "de": "Alias",
+            "es": "Alias"
+          },
+          "description": {
+            "en": "Its name in Firewall > Aliases.",
+            "fr": "Son nom dans Pare-feu > Alias.",
+            "de": "Sein Name unter Firewall > Aliase.",
+            "es": "Su nombre en Cortafuegos > Alias."
+          },
+          "required": true
+        },
+        {
+          "key": "operation",
+          "type": "select",
+          "label": {
+            "en": "Operation",
+            "fr": "Opération",
+            "de": "Vorgang",
+            "es": "Operación"
+          },
+          "options": [
+            {
+              "value": "add",
+              "label": {
+                "en": "Add",
+                "fr": "Ajouter",
+                "de": "Hinzufügen",
+                "es": "Añadir"
+              }
+            },
+            {
+              "value": "remove",
+              "label": {
+                "en": "Remove",
+                "fr": "Retirer",
+                "de": "Entfernen",
+                "es": "Quitar"
+              }
+            }
+          ],
+          "required": true
+        },
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Device",
+            "fr": "Appareil",
+            "de": "Gerät",
+            "es": "Dispositivo"
+          },
+          "description": {
+            "en": "A network device: its current IP address. Or type an address below.",
+            "fr": "Un appareil du réseau : son adresse IP actuelle. Ou saisissez une adresse ci-dessous.",
+            "de": "Ein Netzwerkgerät: seine aktuelle IP-Adresse. Oder geben Sie unten eine Adresse ein.",
+            "es": "Un dispositivo de red: su IP actual. O escriba una dirección abajo."
+          },
+          "required": false
+        },
+        {
+          "key": "address",
+          "type": "string",
+          "label": {
+            "en": "Address",
+            "fr": "Adresse",
+            "de": "Adresse",
+            "es": "Dirección"
+          },
+          "placeholder": {
+            "en": "192.168.1.20",
+            "fr": "192.168.1.20",
+            "de": "192.168.1.20",
+            "es": "192.168.1.20"
+          },
+          "required": false
+        }
+      ],
+      "outputs": [
+        {
+          "key": "alias",
+          "type": "string",
+          "label": {
+            "en": "Alias",
+            "fr": "Alias",
+            "de": "Alias",
+            "es": "Alias"
+          }
+        },
+        {
+          "key": "address",
+          "type": "string",
+          "label": {
+            "en": "Address",
+            "fr": "Adresse",
+            "de": "Adresse",
+            "es": "Dirección"
+          }
+        },
+        {
+          "key": "operation",
+          "type": "string",
+          "label": {
+            "en": "Operation",
+            "fr": "Opération",
+            "de": "Vorgang",
+            "es": "Operación"
+          },
+          "description": {
+            "en": "add or remove.",
+            "fr": "add ou remove.",
+            "de": "add oder remove.",
+            "es": "add o remove."
+          }
+        }
+      ]
+    },
+    {
+      "key": "restart_service",
+      "label": {
+        "en": "OPNsense: restart a service",
+        "fr": "OPNsense : redémarrer un service",
+        "de": "OPNsense: Dienst neu starten",
+        "es": "OPNsense: reiniciar un servicio"
+      },
+      "description": {
+        "en": "A service of Status > Services, by its name (unbound, dnsmasq…).",
+        "fr": "Un service de Statut > Services, par son nom (unbound, dnsmasq…).",
+        "de": "Ein Dienst unter Status > Dienste, nach Name (unbound, dnsmasq…).",
+        "es": "Un servicio de Estado > Servicios, por su nombre (unbound, dnsmasq…)."
+      },
+      "timeout_seconds": 60,
+      "fields": [
+        {
+          "key": "service",
+          "type": "string",
+          "label": {
+            "en": "Service",
+            "fr": "Service",
+            "de": "Dienst",
+            "es": "Servicio"
+          },
+          "placeholder": {
+            "en": "unbound",
+            "fr": "unbound",
+            "de": "unbound",
+            "es": "unbound"
+          },
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "key": "service",
+          "type": "string",
+          "label": {
+            "en": "Service",
+            "fr": "Service",
+            "de": "Dienst",
+            "es": "Servicio"
+          }
+        },
+        {
+          "key": "running",
+          "type": "boolean",
+          "label": {
+            "en": "Running",
+            "fr": "En marche",
+            "de": "Läuft",
+            "es": "En marcha"
+          }
+        }
+      ]
+    },
+    {
+      "key": "check_updates",
+      "label": {
+        "en": "OPNsense: check for updates",
+        "fr": "OPNsense : rechercher les mises à jour",
+        "de": "OPNsense: nach Updates suchen",
+        "es": "OPNsense: buscar actualizaciones"
+      },
+      "description": {
+        "en": "OPNsense asks its mirror now. Installing stays a choice made in OPNsense.",
+        "fr": "OPNsense interroge son miroir maintenant. L’installation reste un choix fait dans OPNsense.",
+        "de": "OPNsense fragt jetzt seinen Mirror. Die Installation bleibt eine Entscheidung in OPNsense.",
+        "es": "OPNsense consulta ahora su réplica. La instalación sigue siendo una decisión en OPNsense."
+      },
+      "timeout_seconds": 120,
+      "outputs": [
+        {
+          "key": "updates",
+          "type": "number",
+          "label": {
+            "en": "Updates",
+            "fr": "Mises à jour",
+            "de": "Updates",
+            "es": "Actualizaciones"
+          },
+          "description": {
+            "en": "-1 when unknown.",
+            "fr": "-1 si inconnu.",
+            "de": "-1, wenn unbekannt.",
+            "es": "-1 si se desconoce."
+          }
+        },
+        {
+          "key": "current_version",
+          "type": "string",
+          "label": {
+            "en": "Current version",
+            "fr": "Version actuelle",
+            "de": "Aktuelle Version",
+            "es": "Versión actual"
+          }
+        },
+        {
+          "key": "new_version",
+          "type": "string",
+          "label": {
+            "en": "New version",
+            "fr": "Nouvelle version",
+            "de": "Neue Version",
+            "es": "Nueva versión"
+          }
+        },
+        {
+          "key": "summary",
+          "type": "string",
+          "label": {
+            "en": "Summary",
+            "fr": "Résumé",
+            "de": "Zusammenfassung",
+            "es": "Resumen"
+          },
+          "description": {
+            "en": "A sentence ready to put in a message.",
+            "fr": "Une phrase prête à mettre dans un message.",
+            "de": "Ein fertiger Satz für eine Nachricht.",
+            "es": "Una frase lista para poner en un mensaje."
+          }
+        }
+      ]
+    },
+    {
+      "key": "reboot",
+      "label": {
+        "en": "OPNsense: reboot",
+        "fr": "OPNsense : redémarrer",
+        "de": "OPNsense: neu starten",
+        "es": "OPNsense: reiniciar"
+      },
+      "description": {
+        "en": "Reboots the firewall: the network is cut for a few minutes.",
+        "fr": "Redémarre le pare-feu : le réseau est coupé quelques minutes.",
+        "de": "Startet die Firewall neu: Das Netzwerk ist einige Minuten unterbrochen.",
+        "es": "Reinicia el cortafuegos: la red se corta unos minutos."
+      },
+      "timeout_seconds": 15
+    }
+  ]
+}
