@@ -21,21 +21,21 @@ Todo se queda en su red: la integración solo habla con OPNsense, nunca con una 
 - OPNsense 25.1 o posterior (escrita a partir de la API de OPNsense 26.7), accesible desde el equipo de Gladys.
 - Un usuario de OPNsense dedicado a Gladys, con una clave de API. Créelo en **Sistema > Acceso > Usuarios** y dele los privilegios de las funciones que quiera (campo **Privilegios**):
 
-| Función                           | Privilegio de OPNsense                                               |
-| --------------------------------- | -------------------------------------------------------------------- |
-| Cortafuegos (CPU, memoria, disco) | Lobby: Dashboard                                                     |
-| Puertas de enlace                 | System: Gateways                                                     |
-| Interfaces                        | Status: Interfaces, Reporting: Traffic                               |
-| Dispositivos de red               | Diagnostics: ARP Table, y Services: Dnsmasq DNS/DHCP o DHCP: Kea(v4) |
-| WireGuard                         | VPN: WireGuard: Status                                               |
-| Servicios (disparador, reinicio)  | Status: Services                                                     |
-| Actualizaciones (búsqueda)        | System: Firmware                                                     |
-| Interruptores de reglas           | Firewall: Rules [new], Firewall: Categories                          |
-| Acción sobre los alias            | Diagnostics: PF Table IP addresses                                   |
-| Reinicio                          | Diagnostics: Reboot System                                           |
-| Wake-on-LAN (plugin os-wol)       | Services: Wake on LAN                                                |
+| Función                                                                        | Privilegio de OPNsense                                               |
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| Cortafuegos (nombre, versión, CPU, memoria, disco, temperatura, tiempo activo) | Lobby: Dashboard                                                     |
+| Puertas de enlace                                                              | System: Gateways                                                     |
+| Interfaces                                                                     | Status: Interfaces, Reporting: Traffic                               |
+| Dispositivos de red                                                            | Diagnostics: ARP Table, y Services: Dnsmasq DNS/DHCP o DHCP: Kea(v4) |
+| WireGuard                                                                      | VPN: WireGuard: Status                                               |
+| Servicios (disparador, reinicio)                                               | Status: Services                                                     |
+| Actualizaciones (búsqueda)                                                     | System: Firmware                                                     |
+| Interruptores de reglas                                                        | Firewall: Rules [new], Firewall: Categories                          |
+| Acción sobre los alias                                                         | Diagnostics: PF Table IP addresses                                   |
+| Reinicio                                                                       | Diagnostics: Reboot System                                           |
+| Wake-on-LAN (plugin os-wol)                                                    | Services: Wake on LAN                                                |
 
-Un privilegio no concedido simplemente desactiva su función. «System: Firmware» también permite instalar actualizaciones por la API: concédalo solo si quiere la búsqueda de actualizaciones. Los nombres de los privilegios son los de la interfaz en inglés de OPNsense.
+Un privilegio no concedido simplemente desactiva su función, «Lobby: Dashboard» incluido: las puertas de enlace, las interfaces y los dispositivos de la red funcionan sin él. «System: Firmware» también permite instalar actualizaciones por la API: concédalo solo si quiere la búsqueda de actualizaciones. Los nombres de los privilegios son los de la interfaz en inglés de OPNsense.
 
 En la página del usuario, sección **Claves de API**, pulse **+**: se descarga un archivo `key.txt`, con una línea `key=` y una línea `secret=`.
 
@@ -114,6 +114,7 @@ Solo local: la integración habla con la API de OPNsense por HTTPS en su red, co
 - **«OPNsense rechaza la clave de API»**: vuelva a copiar la clave y el secreto desde `key.txt`, sin espacios.
 - **«El certificado HTTPS es rechazado»**: desmarque «Verificar el certificado», o instale un certificado válido para la dirección introducida.
 - **«le falta un privilegio»**: añada los privilegios indicados arriba al usuario de OPNsense de la clave.
+- **«sin el privilegio Lobby: Dashboard»**: la integración funciona, pero el dispositivo cortafuegos queda vacío; conceda «Lobby: Dashboard» para tener su estado.
 - **Ningún dispositivo de red**: compruebe el privilegio «Diagnostics: ARP Table» y la opción «Dispositivos de red ofrecidos».
 - **Falta una regla**: debe llevar la categoría y proceder del nuevo editor de reglas.
 - **El Wake-on-LAN falla**: instale el plugin `os-wol` en **Sistema > Firmware > Plugins**, e introduzca la interfaz (`lan`, `opt1`…) para un dispositivo nunca visto.

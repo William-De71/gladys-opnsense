@@ -21,21 +21,21 @@ Alles bleibt in Ihrem Netzwerk: Die Integration spricht nur mit OPNsense, nie mi
 - OPNsense 25.1 oder neuer (geschrieben anhand der API von OPNsense 26.7), vom Gladys-Rechner aus erreichbar.
 - Ein eigener OPNsense-Benutzer für Gladys, mit einem API-Schlüssel. Legen Sie ihn unter **System > Zugang > Benutzer** an und geben Sie ihm die Rechte der gewünschten Funktionen (Feld **Berechtigungen**):
 
-| Funktion                             | OPNsense-Recht                                                            |
-| ------------------------------------ | ------------------------------------------------------------------------- |
-| Firewall (CPU, Speicher, Festplatte) | Lobby: Dashboard                                                          |
-| Gateways                             | System: Gateways                                                          |
-| Schnittstellen                       | Status: Interfaces, Reporting: Traffic                                    |
-| Netzwerkgeräte                       | Diagnostics: ARP Table, und Services: Dnsmasq DNS/DHCP oder DHCP: Kea(v4) |
-| WireGuard                            | VPN: WireGuard: Status                                                    |
-| Dienste (Auslöser, Neustart)         | Status: Services                                                          |
-| Updates (Prüfung)                    | System: Firmware                                                          |
-| Regel-Schalter                       | Firewall: Rules [new], Firewall: Categories                               |
-| Alias-Aktion                         | Diagnostics: PF Table IP addresses                                        |
-| Neustart                             | Diagnostics: Reboot System                                                |
-| Wake-on-LAN (Plugin os-wol)          | Services: Wake on LAN                                                     |
+| Funktion                                                                  | OPNsense-Recht                                                            |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Firewall (Name, Version, CPU, Speicher, Festplatte, Temperatur, Laufzeit) | Lobby: Dashboard                                                          |
+| Gateways                                                                  | System: Gateways                                                          |
+| Schnittstellen                                                            | Status: Interfaces, Reporting: Traffic                                    |
+| Netzwerkgeräte                                                            | Diagnostics: ARP Table, und Services: Dnsmasq DNS/DHCP oder DHCP: Kea(v4) |
+| WireGuard                                                                 | VPN: WireGuard: Status                                                    |
+| Dienste (Auslöser, Neustart)                                              | Status: Services                                                          |
+| Updates (Prüfung)                                                         | System: Firmware                                                          |
+| Regel-Schalter                                                            | Firewall: Rules [new], Firewall: Categories                               |
+| Alias-Aktion                                                              | Diagnostics: PF Table IP addresses                                        |
+| Neustart                                                                  | Diagnostics: Reboot System                                                |
+| Wake-on-LAN (Plugin os-wol)                                               | Services: Wake on LAN                                                     |
 
-Ein nicht erteiltes Recht schaltet einfach seine Funktion ab. „System: Firmware" erlaubt auch, Updates über die API zu installieren: Erteilen Sie es nur, wenn Sie die Update-Prüfung wollen. Die Namen der Rechte sind die der englischen Oberfläche von OPNsense.
+Ein nicht erteiltes Recht schaltet einfach seine Funktion ab, auch „Lobby: Dashboard": Gateways, Schnittstellen und Netzwerkgeräte funktionieren ohne es. „System: Firmware" erlaubt auch, Updates über die API zu installieren: Erteilen Sie es nur, wenn Sie die Update-Prüfung wollen. Die Namen der Rechte sind die der englischen Oberfläche von OPNsense.
 
 Klicken Sie auf der Benutzerseite unter **API-Schlüssel** auf **+**: Eine Datei `key.txt` wird heruntergeladen, mit einer Zeile `key=` und einer Zeile `secret=`.
 
@@ -114,6 +114,7 @@ Nur lokal: Die Integration spricht per HTTPS in Ihrem Netzwerk mit der API von O
 - **„OPNsense lehnt den API-Schlüssel ab"**: Kopieren Sie Schlüssel und Geheimnis erneut aus `key.txt`, ohne Leerzeichen.
 - **„Das HTTPS-Zertifikat wird abgelehnt"**: Deaktivieren Sie „Zertifikat prüfen" oder installieren Sie ein für die eingegebene Adresse gültiges Zertifikat.
 - **„fehlt ein Recht"**: Fügen Sie dem OPNsense-Benutzer des Schlüssels die oben genannten Rechte hinzu.
+- **„ohne das Recht Lobby: Dashboard"**: Die Integration funktioniert, aber das Firewall-Gerät bleibt leer; erteilen Sie „Lobby: Dashboard" für seinen Zustand.
 - **Kein Netzwerkgerät**: Prüfen Sie das Recht „Diagnostics: ARP Table" und die Option „Angebotene Netzwerkgeräte".
 - **Eine Regel fehlt**: Sie muss die Kategorie tragen und aus dem neuen Regel-Editor stammen.
 - **Wake-on-LAN schlägt fehl**: Installieren Sie das Plugin `os-wol` unter **System > Firmware > Plugins** und geben Sie für ein nie gesehenes Gerät die Schnittstelle ein (`lan`, `opt1`…).

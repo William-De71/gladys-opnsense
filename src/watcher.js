@@ -10,7 +10,9 @@
 // hands each round to the app with its transitions (tracker.js). A round
 // never overlaps another one. The system time is the probe of the round: when
 // it fails (unreachable, wrong key), the round fails (onError); any other
-// read failing keeps its previous snapshot.
+// read failing keeps its previous snapshot. A 403 on the probe still proves
+// the address and the key: only "Lobby: Dashboard" is not granted, and the
+// round goes on without the health of the firewall.
 // -----------------------------------------------------------------------------
 
 import {
@@ -69,6 +71,7 @@ function createWatcher({
   let rules = new Map();
   let rulesRead = false;
   let wireguard = false;
+  let dashboard = true;
   let fetchedAt = null;
   // endpoint -> time it was found missing or forbidden
   let missing = new Map();
@@ -146,8 +149,20 @@ function createWatcher({
    * @returns {Promise<void>}
    */
   async function readAll(forceSlow) {
-    // The probe: a failure here fails the round.
-    const time = await api.systemTime();
+    // The probe: a failure here fails the round, but for a missing privilege.
+    let time;
+    try {
+      time = await api.systemTime();
+      dashboard = true;
+    } catch (err) {
+      if (err.kind !== 'forbidden') {
+        throw err;
+      }
+      if (dashboard) {
+        logger.info(`OPNsense systemTime: ${err.message}, firewall health skipped`);
+      }
+      dashboard = false;
+    }
     await readSlow(forceSlow);
     const config = getConfig();
     const at = now();
@@ -345,6 +360,7 @@ function createWatcher({
       rules = new Map();
       rulesRead = false;
       wireguard = false;
+      dashboard = true;
       fetchedAt = null;
       missing = new Map();
     },
@@ -362,6 +378,8 @@ function createWatcher({
     rule: (uuid) => rules.get(uuid) ?? null,
     rulesRead: () => rulesRead,
     hasWireguard: () => wireguard,
+    /** @description False when "Lobby: Dashboard" is not granted. */
+    hasDashboard: () => dashboard,
     hasTemperature: () => system?.temperature !== null && system?.temperature !== undefined,
     fetchedAt: () => fetchedAt,
     /**

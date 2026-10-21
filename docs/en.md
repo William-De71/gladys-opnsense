@@ -21,21 +21,21 @@ Everything stays on your network: the integration only talks to OPNsense, never 
 - OPNsense 25.1 or later (written against the API of OPNsense 26.7), reachable from the Gladys machine.
 - An OPNsense user dedicated to Gladys, with an API key. Create it in **System > Access > Users**, then give it the privileges of the features you want (field **Privileges**):
 
-| Feature                              | OPNsense privilege                                                      |
-| ------------------------------------ | ----------------------------------------------------------------------- |
-| Firewall (CPU, memory, disk, uptime) | Lobby: Dashboard                                                        |
-| Gateways                             | System: Gateways                                                        |
-| Interfaces                           | Status: Interfaces, Reporting: Traffic                                  |
-| Devices of the network               | Diagnostics: ARP Table, and Services: Dnsmasq DNS/DHCP or DHCP: Kea(v4) |
-| WireGuard                            | VPN: WireGuard: Status                                                  |
-| Services (trigger, restart)          | Status: Services                                                        |
-| Updates (check)                      | System: Firmware                                                        |
-| Rule switches                        | Firewall: Rules [new], Firewall: Categories                             |
-| Alias action                         | Diagnostics: PF Table IP addresses                                      |
-| Reboot                               | Diagnostics: Reboot System                                              |
-| Wake-on-LAN (os-wol plugin)          | Services: Wake on LAN                                                   |
+| Feature                                                          | OPNsense privilege                                                      |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Firewall (name, version, CPU, memory, disk, temperature, uptime) | Lobby: Dashboard                                                        |
+| Gateways                                                         | System: Gateways                                                        |
+| Interfaces                                                       | Status: Interfaces, Reporting: Traffic                                  |
+| Devices of the network                                           | Diagnostics: ARP Table, and Services: Dnsmasq DNS/DHCP or DHCP: Kea(v4) |
+| WireGuard                                                        | VPN: WireGuard: Status                                                  |
+| Services (trigger, restart)                                      | Status: Services                                                        |
+| Updates (check)                                                  | System: Firmware                                                        |
+| Rule switches                                                    | Firewall: Rules [new], Firewall: Categories                             |
+| Alias action                                                     | Diagnostics: PF Table IP addresses                                      |
+| Reboot                                                           | Diagnostics: Reboot System                                              |
+| Wake-on-LAN (os-wol plugin)                                      | Services: Wake on LAN                                                   |
 
-A privilege you do not grant simply turns its feature off. "System: Firmware" also allows installing updates from the API: grant it only if you want the update check.
+A privilege you do not grant simply turns its feature off, "Lobby: Dashboard" included: the gateways, interfaces and devices of the network still work without it. "System: Firmware" also allows installing updates from the API: grant it only if you want the update check.
 
 In the user page, under **API keys**, click **+**: a `key.txt` file is downloaded, with a `key=` line and a `secret=` line.
 
@@ -114,6 +114,7 @@ Local only: the integration talks to the OPNsense API over HTTPS on your network
 - **"OPNsense refuses the API key"**: copy the key and the secret again from `key.txt`, without spaces.
 - **"The HTTPS certificate is refused"**: untick "Verify the certificate", or install a certificate valid for the address you typed.
 - **"lacks a privilege"**: add the privileges listed above to the OPNsense user of the key.
+- **"without the Lobby: Dashboard privilege"**: the integration works, but the firewall device stays empty; grant "Lobby: Dashboard" to get its health.
 - **No device of the network**: check the privilege "Diagnostics: ARP Table" and the option "Network devices offered".
 - **A rule is missing**: it must carry the category, and come from the new rule editor.
 - **Wake-on-LAN fails**: install the `os-wol` plugin in **System > Firmware > Plugins**, and type the interface (`lan`, `opt1`…) for a device never seen.

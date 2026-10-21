@@ -21,21 +21,21 @@ Tout reste sur votre réseau : l'intégration ne parle qu'à OPNsense, jamais à
 - OPNsense 25.1 ou plus récent (écrit d'après l'API d'OPNsense 26.7), joignable depuis la machine de Gladys.
 - Un utilisateur OPNsense dédié à Gladys, avec une clé d'API. Créez-le dans **Système > Accès > Utilisateurs**, puis donnez-lui les droits des fonctions voulues (champ **Privilèges**) :
 
-| Fonction                            | Droit OPNsense                                                         |
-| ----------------------------------- | ---------------------------------------------------------------------- |
-| Pare-feu (CPU, mémoire, disque)     | Lobby: Dashboard                                                       |
-| Passerelles                         | System: Gateways                                                       |
-| Interfaces                          | Status: Interfaces, Reporting: Traffic                                 |
-| Appareils du réseau                 | Diagnostics: ARP Table, et Services: Dnsmasq DNS/DHCP ou DHCP: Kea(v4) |
-| WireGuard                           | VPN: WireGuard: Status                                                 |
-| Services (déclencheur, redémarrage) | Status: Services                                                       |
-| Mises à jour (recherche)            | System: Firmware                                                       |
-| Interrupteurs de règles             | Firewall: Rules [new], Firewall: Categories                            |
-| Action sur les alias                | Diagnostics: PF Table IP addresses                                     |
-| Redémarrage                         | Diagnostics: Reboot System                                             |
-| Wake-on-LAN (plugin os-wol)         | Services: Wake on LAN                                                  |
+| Fonction                                                          | Droit OPNsense                                                         |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Pare-feu (nom, version, CPU, mémoire, disque, température, durée) | Lobby: Dashboard                                                       |
+| Passerelles                                                       | System: Gateways                                                       |
+| Interfaces                                                        | Status: Interfaces, Reporting: Traffic                                 |
+| Appareils du réseau                                               | Diagnostics: ARP Table, et Services: Dnsmasq DNS/DHCP ou DHCP: Kea(v4) |
+| WireGuard                                                         | VPN: WireGuard: Status                                                 |
+| Services (déclencheur, redémarrage)                               | Status: Services                                                       |
+| Mises à jour (recherche)                                          | System: Firmware                                                       |
+| Interrupteurs de règles                                           | Firewall: Rules [new], Firewall: Categories                            |
+| Action sur les alias                                              | Diagnostics: PF Table IP addresses                                     |
+| Redémarrage                                                       | Diagnostics: Reboot System                                             |
+| Wake-on-LAN (plugin os-wol)                                       | Services: Wake on LAN                                                  |
 
-Un droit non accordé désactive simplement sa fonction. « System: Firmware » permet aussi d'installer les mises à jour par l'API : ne l'accordez que si vous voulez la recherche de mises à jour. Les noms des droits sont ceux de l'interface anglaise d'OPNsense.
+Un droit non accordé désactive simplement sa fonction, « Lobby: Dashboard » compris : les passerelles, les interfaces et les appareils du réseau marchent sans lui. « System: Firmware » permet aussi d'installer les mises à jour par l'API : ne l'accordez que si vous voulez la recherche de mises à jour. Les noms des droits sont ceux de l'interface anglaise d'OPNsense.
 
 Dans la page de l'utilisateur, section **Clés d'API**, cliquez sur **+** : un fichier `key.txt` est téléchargé, avec une ligne `key=` et une ligne `secret=`.
 
@@ -114,6 +114,7 @@ Local uniquement : l'intégration parle à l'API d'OPNsense en HTTPS sur votre r
 - **« OPNsense refuse la clé d'API »** : recopiez la clé et le secret depuis `key.txt`, sans espaces.
 - **« Le certificat HTTPS est refusé »** : décochez « Vérifier le certificat », ou installez un certificat valide pour l'adresse saisie.
 - **« n'a pas un des droits nécessaires »** : ajoutez les droits listés plus haut à l'utilisateur OPNsense de la clé.
+- **« sans le droit Lobby: Dashboard »** : l'intégration fonctionne, mais l'appareil pare-feu reste vide ; accordez « Lobby: Dashboard » pour avoir sa santé.
 - **Aucun appareil du réseau** : vérifiez le droit « Diagnostics: ARP Table » et l'option « Appareils du réseau proposés ».
 - **Une règle manque** : elle doit porter la catégorie, et venir du nouvel éditeur de règles.
 - **Le Wake-on-LAN échoue** : installez le plugin `os-wol` dans **Système > Firmware > Plugins**, et saisissez l'interface (`lan`, `opt1`…) pour un appareil jamais vu.

@@ -383,7 +383,7 @@ function createApp(
       const system = watcher.system();
       await reportStatus(
         true,
-        all('statusConnected', {
+        all(watcher.hasDashboard() ? 'statusConnected' : 'statusNoDashboard', {
           version: system?.version ?? '?',
           gateways: watcher.gateways().filter((g) => g.status === 'online').length,
           total: watcher.gateways().length,
@@ -663,14 +663,17 @@ function createApp(
       return all('noCredentials');
     }
     try {
-      await api.systemTime();
+      await api.systemTime().catch((err) => {
+        // A 403 proves the address and the key: "Lobby: Dashboard" only is missing.
+        throw err.kind === 'forbidden' ? Object.assign(err, { dashboardOnly: true }) : err;
+      });
       const information = await api.systemInformation().catch(() => null);
       return all('testOk', {
         name: information?.name ?? 'OPNsense',
         version: parseVersion(information?.versions?.[0]) ?? '?',
       });
     } catch (err) {
-      return errorMessage(err);
+      return err.dashboardOnly ? all('testNoDashboard') : errorMessage(err);
     }
   });
 

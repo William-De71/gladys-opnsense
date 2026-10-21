@@ -379,6 +379,12 @@ const TEXTS = {
     de: 'OPNsense lehnt den API-Schlüssel ab: Prüfen Sie den Schlüssel und sein Geheimnis.',
     es: 'OPNsense rechaza la clave de API: compruebe la clave y su secreto.',
   },
+  statusNoDashboard: {
+    en: 'Connected, without the "Lobby: Dashboard" privilege (no CPU, memory, disk nor uptime): {gateways}/{total} gateway(s) online, {hosts} device(s) on the network.',
+    fr: 'Connecté, sans le droit « Lobby: Dashboard » (ni CPU, mémoire, disque, durée) : {gateways}/{total} passerelle(s) en ligne, {hosts} appareil(s) sur le réseau.',
+    de: 'Verbunden, ohne das Recht „Lobby: Dashboard“ (keine CPU, Speicher, Festplatte, Laufzeit): {gateways}/{total} Gateway(s) online, {hosts} Gerät(e) im Netzwerk.',
+    es: 'Conectado, sin el privilegio «Lobby: Dashboard» (sin CPU, memoria, disco ni tiempo activo): {gateways}/{total} puerta(s) de enlace en línea, {hosts} dispositivo(s) en la red.',
+  },
   statusForbidden: {
     en: 'The OPNsense user of the API key lacks a privilege: see the documentation.',
     fr: 'L’utilisateur OPNsense de la clé d’API n’a pas un des droits nécessaires : voir la documentation.',
@@ -408,6 +414,12 @@ const TEXTS = {
     fr: 'Connecté à {name} (OPNsense {version}).',
     de: 'Verbunden mit {name} (OPNsense {version}).',
     es: 'Conectado a {name} (OPNsense {version}).',
+  },
+  testNoDashboard: {
+    en: 'Connected to OPNsense, but the API user lacks "Lobby: Dashboard": no CPU, memory, disk, temperature nor uptime. The other functions follow their own privileges.',
+    fr: 'Connecté à OPNsense, mais l’utilisateur de la clé n’a pas le droit « Lobby: Dashboard » : ni CPU, mémoire, disque, température, durée. Le reste suit ses propres droits.',
+    de: 'Mit OPNsense verbunden, aber dem API-Benutzer fehlt „Lobby: Dashboard“: keine CPU, Speicher, Festplatte, Temperatur, Laufzeit. Der Rest folgt seinen eigenen Rechten.',
+    es: 'Conectado a OPNsense, pero al usuario de la API le falta «Lobby: Dashboard»: sin CPU, memoria, disco, temperatura ni tiempo activo. El resto sigue sus propios privilegios.',
   },
   forgotten: {
     en: 'Known devices forgotten: the next reading is the new reference, without alert.',

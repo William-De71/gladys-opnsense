@@ -407,7 +407,6 @@ test('configuration actions: test the connection, forget the known devices', asy
 test('errors become clear connection statuses', async (t) => {
   for (const [status, pattern] of [
     [401, /refuse la clé/],
-    [403, /droits nécessaires/],
     [404, /ne répond pas comme une API OPNsense/],
     ['ECONNREFUSED', /ne répond pas à https:\/\/192\.168\.1\.1/],
   ]) {
@@ -420,6 +419,41 @@ test('errors become clear connection statuses', async (t) => {
   const { gladys } = await startApp({ config: {} });
   t.after(() => gladys.fake.shutdown());
   assert.match(gladys.fake.connectionStatus.message.en, /Enter the address of OPNsense/);
+});
+
+test('without "Lobby: Dashboard", the privileges granted still work', async (t) => {
+  // forum 11221: a user with only "Diagnostics: ARP Table" and "System: Gateways".
+  const forbidden = [
+    'diagnostics/system/system_time',
+    'diagnostics/system/system_information',
+    'diagnostics/system/system_resources',
+    'diagnostics/system/system_disk',
+    'diagnostics/system/system_temperature',
+    'diagnostics/cpu_usage/stream',
+    'core/firmware/status',
+    'interfaces/overview/interfaces_info',
+    'diagnostics/traffic/interface',
+    'dnsmasq/leases/search',
+    'kea/leases4/search',
+    'wireguard/service/show',
+    'core/service/search',
+    'firewall/category/search_item',
+    'firewall/filter/search_rule',
+  ];
+  const fake = opnsense({ statuses: Object.fromEntries(forbidden.map((path) => [path, 403])) });
+  const { gladys } = await startApp({ fake });
+  t.after(() => gladys.fake.shutdown());
+  assert.equal(gladys.fake.connectionStatus.connected, true);
+  assert.match(
+    gladys.fake.connectionStatus.message.fr,
+    /sans le droit « Lobby: Dashboard ».*2\/2 passerelle\(s\) en ligne/,
+  );
+  const offered = gladys.fake.discoveredDevices.map((d) => d.external_id);
+  assert.ok(offered.includes(WAN_GW), 'the gateway');
+  assert.ok(offered.includes(PHONE), 'the hosts of the ARP table');
+  const ack = await gladys.fake.action(ACTIONS.TEST_CONNECTION);
+  assert.match(ack.data.message.fr, /n’a pas le droit « Lobby: Dashboard »/);
+  assert.equal(fake.count('diagnostics/system/system_time'), 2, 'still the probe');
 });
 
 test('a missing plugin is skipped, the rest is read', async (t) => {
