@@ -14,6 +14,7 @@ import {
   readInternetSettings,
   readNetworkSettings,
   formatUptime,
+  NETWORK_SHOW,
 } from '../src/widgets.js';
 import { LANGUAGES } from '../src/i18n.js';
 import { NOW, MINUTE } from './helpers/fixtures.js';
@@ -144,10 +145,18 @@ test('internet: tiles, chart once the interface exists, a message without WAN', 
   assert.deepEqual(readInternetSettings({ interval: 'nope' }).interval, 'last-day');
 });
 
-test('network: present, absent and all, valid with long names and many hosts', () => {
+test('network: present, absent, all and new, valid with long names and many hosts', () => {
+  const recent = hosts.map((host, i) => ({ mac: host.mac, firstSeen: NOW - i * MINUTE }));
   for (const language of LANGUAGES) {
-    for (const show of ['present', 'absent', 'all']) {
-      const content = buildNetworkWidget({ hosts, language, now: NOW, pollSeconds: 30, show });
+    for (const show of NETWORK_SHOW) {
+      const content = buildNetworkWidget({
+        hosts,
+        language,
+        now: NOW,
+        pollSeconds: 30,
+        show,
+        recent,
+      });
       assertValid(content, `${show} ${language}`);
       const list = content.components.find((c) => c.type === 'card-list');
       assert.ok(list.items.length <= 8);
@@ -164,6 +173,37 @@ test('network: present, absent and all, valid with long names and many hosts', (
   const [first] = content.components[1].items;
   assert.match(first.subtitle, /^192\.168\.1\.\d+/, 'the IP first: the line is cut');
   assert.equal(readNetworkSettings({ show: 'x' }).show, 'present');
+  assert.equal(readNetworkSettings({ show: 'new' }).show, 'new');
+});
+
+test('network: the new devices, newest first, even one not read since a restart', () => {
+  const recent = [
+    { mac: 'de:ad:be:ef:00:01', firstSeen: NOW - 3 * 60 * MINUTE },
+    { mac: hosts[4].mac, firstSeen: NOW - 2 * 24 * 60 * MINUTE },
+  ];
+  const content = buildNetworkWidget({
+    hosts,
+    language: 'fr',
+    now: NOW,
+    pollSeconds: 30,
+    show: 'new',
+    recent,
+  });
+  assertValid(content, 'new');
+  assert.match(content.components[0].text, /^2 nouveau\(x\) en 7 jours/);
+  const [unread, known] = content.components[1].items;
+  assert.equal(unread.title, 'de:ad:be:ef:00:01');
+  assert.equal(unread.subtitle, 'nouveau, il y a 3 h');
+  assert.equal(unread.badge.text, 'Parti');
+  assert.equal(known.subtitle, '192.168.1.14 · nouveau, il y a 2 jours');
+  const empty = buildNetworkWidget({
+    hosts,
+    language: 'en',
+    now: NOW,
+    pollSeconds: 30,
+    show: 'new',
+  });
+  assert.match(empty.components[1].text, /No new device/);
 });
 
 test('vpn: peers online first, a message without peer', () => {

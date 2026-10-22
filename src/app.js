@@ -31,7 +31,7 @@ import {
   AUTO_LANGUAGE,
 } from './config.js';
 import { createOpnsenseClient } from './opnsense-api.js';
-import { createKnownHosts, DEFAULT_PATH } from './store.js';
+import { createKnownHosts, DEFAULT_PATH, NEW_HOST_WINDOW_MS } from './store.js';
 import { createWatcher } from './watcher.js';
 import { normalizeMac, parseVersion, readServices } from './read.js';
 import {
@@ -507,6 +507,7 @@ function createApp(
         now: now(),
         pollSeconds: config.pollInterval,
         show: readNetworkSettings(settings).show,
+        recent: known.recent(now() - NEW_HOST_WINDOW_MS),
         created: new Set(
           watcher
             .hosts()

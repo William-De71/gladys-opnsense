@@ -83,7 +83,7 @@ Ein Gerät Ihres Netzwerks ist **anwesend**, sobald es in der ARP-Tabelle von OP
 
 - **OPNsense-Firewall**: Anzeigen für CPU, Speicher und Festplatte, Temperatur, Gateways, Betriebszeit, Updates und zwei Schaltflächen: Updates prüfen und neu starten (mit Bestätigung).
 - **Internetverbindung**: Latenz, Paketverlust, Download und Upload eines Gateways und einer Schnittstelle (standardmäßig das WAN), mit dem Verkehrsdiagramm, sobald das Gerät der Schnittstelle hinzugefügt ist.
-- **Netzwerkgeräte**: die jetzt verbundenen Geräte, die gegangenen oder alle.
+- **Netzwerkgeräte**: die jetzt verbundenen Geräte, die gegangenen, alle oder die neuen (in den letzten 7 Tagen zum ersten Mal gesehen, die neuesten zuerst).
 - **WireGuard-VPN**: die Peers, verbunden oder nicht, und ihr letzter Handshake.
 
 ### Szenen
@@ -92,7 +92,7 @@ Auslöser:
 
 - **Gateway-Status geändert**: online, beeinträchtigt (Latenz, Verlust) oder offline, gefiltert nach Gateway und Status.
 - **Gerät gekommen oder gegangen**: für ein in Gladys hinzugefügtes Netzwerkgerät.
-- **Neues Gerät im Netzwerk**: eine nie gesehene MAC-Adresse, einmal pro Adresse.
+- **Neues Gerät im Netzwerk**: eine nie gesehene MAC-Adresse, einmal pro Adresse. Die beim ersten Start vorhandenen Geräte sind die Referenz und lösen nichts aus; die Schaltfläche **Bekannte Geräte vergessen** der Konfiguration beginnt eine neue Referenz.
 - **VPN-Peer verbunden oder nicht**: ein WireGuard-Peer.
 - **Dienst gestartet oder beendet**: Unbound, Dnsmasq, WireGuard…
 - **Update verfügbar**: eine Update-Prüfung hat neue Updates gefunden.

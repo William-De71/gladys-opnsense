@@ -473,10 +473,10 @@
         "es": "Dispositivos de red"
       },
       "description": {
-        "en": "The devices connected now, or the ones that left, with their address.",
-        "fr": "Les appareils connectés en ce moment, ou ceux partis, avec leur adresse.",
-        "de": "Die jetzt verbundenen oder gegangenen Geräte, mit ihrer Adresse.",
-        "es": "Los dispositivos conectados ahora, o los que se fueron, con su dirección."
+        "en": "The devices connected now, the ones that left or the new ones, with their address.",
+        "fr": "Les appareils connectés en ce moment, ceux partis ou les nouveaux, avec leur adresse.",
+        "de": "Die jetzt verbundenen, gegangenen oder neuen Geräte, mit ihrer Adresse.",
+        "es": "Los dispositivos conectados ahora, los que se fueron o los nuevos, con su dirección."
       },
       "icon": "wifi",
       "settings": [
@@ -515,6 +515,15 @@
                 "fr": "Tous les appareils connus",
                 "de": "Alle bekannten Geräte",
                 "es": "Todos los conocidos"
+              }
+            },
+            {
+              "value": "new",
+              "label": {
+                "en": "New devices (7 days)",
+                "fr": "Nouveaux appareils (7 jours)",
+                "de": "Neue Geräte (7 Tage)",
+                "es": "Dispositivos nuevos (7 días)"
               }
             }
           ],

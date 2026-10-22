@@ -245,8 +245,10 @@ function createWatcher({
       if (fresh.length > 0) {
         if (known.initialized()) {
           fresh.forEach((mac) => round.newHosts.push({ host: hosts.get(mac) }));
+          await known.add(fresh, at);
+        } else {
+          await known.add(fresh);
         }
-        await known.add(fresh);
       } else if (!known.initialized()) {
         await known.add([]);
       }

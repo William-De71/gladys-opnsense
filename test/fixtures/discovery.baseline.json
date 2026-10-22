@@ -600,7 +600,7 @@
         "key": "network",
         "settings": ["show"],
         "options": {
-          "show": ["present", "absent", "all"]
+          "show": ["present", "absent", "all", "new"]
         }
       },
       {
