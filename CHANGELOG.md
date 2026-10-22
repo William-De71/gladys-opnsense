@@ -5,6 +5,12 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/). This file is generated at
 each release from the Conventional Commits: do not edit it by hand.
 
+## [0.2.0] - 2026-10-22
+
+### Added
+
+- **widgets:** show the new devices of the last 7 days in the network widget ([#2](https://github.com/William-De71/gladys-opnsense/pull/2), [5adb28d](https://github.com/William-De71/gladys-opnsense/commit/5adb28db83db702413057f143adc4ed7ed4199f7))
+
 ## [0.1.1] - 2026-10-21
 
 ### Fixed
@@ -25,5 +31,6 @@ each release from the Conventional Commits: do not edit it by hand.
 - Local transport only: the integration talks to the OPNsense API on the LAN, with an API key, and can check the HTTPS certificate.
 - English, French, German and Spanish everywhere: settings, devices, widgets, scenes and documentation.
 
+[0.2.0]: https://github.com/William-De71/gladys-opnsense/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/William-De71/gladys-opnsense/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/William-De71/gladys-opnsense/releases/tag/v0.1.0
