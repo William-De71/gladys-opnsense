@@ -83,7 +83,7 @@ En OPNsense, abra **Cortafuegos > Reglas**, edite una regla (por ejemplo «Bloqu
 
 - **Cortafuegos OPNsense**: indicadores de CPU, memoria y disco, temperatura, puertas de enlace, tiempo en marcha, actualizaciones, y dos botones: buscar actualizaciones y reiniciar (con confirmación).
 - **Conexión a internet**: latencia, pérdida de paquetes, descarga y subida de una puerta de enlace y una interfaz (la WAN por defecto), con el gráfico del tráfico en cuanto se añade el dispositivo de la interfaz.
-- **Dispositivos de red**: los dispositivos conectados ahora, los que se fueron, o todos.
+- **Dispositivos de red**: los dispositivos conectados ahora, los que se fueron, todos, o los nuevos (vistos por primera vez en los últimos 7 días, los más recientes primero).
 - **VPN WireGuard**: los pares, conectados o no, y su último contacto.
 
 ### Escenas
@@ -92,7 +92,7 @@ Disparadores:
 
 - **Estado de puerta de enlace cambiado**: en línea, degradada (latencia, pérdida) o sin conexión, filtrado por puerta de enlace y estado.
 - **Dispositivo llegó o se fue**: para un dispositivo de red añadido en Gladys.
-- **Nuevo dispositivo en la red**: una dirección MAC nunca vista, una vez por dirección.
+- **Nuevo dispositivo en la red**: una dirección MAC nunca vista, una vez por dirección. Los dispositivos presentes en el primer arranque son la referencia y no disparan nada; el botón de configuración **Olvidar dispositivos conocidos** empieza una nueva referencia.
 - **Par VPN conectado o no**: un par WireGuard.
 - **Servicio iniciado o detenido**: Unbound, Dnsmasq, WireGuard…
 - **Actualización disponible**: una búsqueda de actualizaciones encontró novedades.

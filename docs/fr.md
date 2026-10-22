@@ -83,7 +83,7 @@ Dans OPNsense, ouvrez **Pare-feu > Règles**, modifiez une règle (par exemple �
 
 - **Pare-feu OPNsense** : jauges CPU, mémoire et disque, température, passerelles, temps de fonctionnement, mises à jour, et deux boutons : rechercher les mises à jour, et redémarrer (avec confirmation).
 - **Connexion internet** : latence, perte de paquets, réception et envoi d'une passerelle et d'une interface (le WAN par défaut), avec le graphique du trafic dès que l'appareil de l'interface est ajouté.
-- **Appareils du réseau** : les appareils connectés en ce moment, ceux partis, ou tous.
+- **Appareils du réseau** : les appareils connectés en ce moment, ceux partis, tous, ou les nouveaux (vus pour la première fois ces 7 derniers jours, les plus récents en tête).
 - **VPN WireGuard** : les pairs, connectés ou non, et leur dernier échange.
 
 ### Scènes
@@ -92,7 +92,7 @@ Déclencheurs :
 
 - **État de passerelle changé** : en ligne, dégradée (latence, perte) ou hors ligne, filtré par passerelle et par état.
 - **Appareil arrivé ou parti** : pour un appareil du réseau ajouté dans Gladys.
-- **Nouvel appareil sur le réseau** : une adresse MAC jamais vue, une fois par adresse.
+- **Nouvel appareil sur le réseau** : une adresse MAC jamais vue, une fois par adresse. Les appareils présents au premier démarrage servent de référence et ne déclenchent rien ; le bouton de configuration **Oublier les appareils connus** repart d'une nouvelle référence.
 - **Pair VPN connecté ou non** : un pair WireGuard.
 - **Service démarré ou arrêté** : Unbound, Dnsmasq, WireGuard…
 - **Mise à jour disponible** : une recherche de mises à jour a trouvé du nouveau.

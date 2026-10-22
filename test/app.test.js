@@ -218,6 +218,18 @@ test('a MAC address never met fires "new device" once, and survives a restart', 
   t.after(() => again.gladys.fake.shutdown());
   await nextRound(again);
   assert.equal(eventsOf(again.gladys, TRIGGERS.NEW_NETWORK_DEVICE).length, 0, 'known on disk');
+
+  // The "new devices" widget: only the address met after the baseline, after a restart too.
+  const ack = await again.gladys.fake.widgetGet(WIDGETS.NETWORK, {
+    language: 'en',
+    settings: { show: 'new' },
+  });
+  assert.equal(ack.success, true, ack.error);
+  const items = ack.data.content.components.find((c) => c.type === 'card-list').items;
+  assert.deepEqual(
+    items.map((item) => item.subtitle),
+    ['192.168.1.99 · new, just now'],
+  );
 });
 
 test('VPN peers and services fire their transitions', async (t) => {

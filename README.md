@@ -81,7 +81,7 @@ External ids rest on stable OPNsense identifiers: gateway name, interface identi
 
 ![The four widgets: firewall overview, internet connection, network devices, WireGuard VPN (generated illustration, not a screenshot)](docs/assets/widgets.en.png)
 
-**Widgets**: OPNsense firewall (gauges, gateways, updates, "check for updates" and "reboot" buttons), Internet connection (latency, loss, rates, traffic chart), Network devices (connected, gone or all), WireGuard VPN (peers).
+**Widgets**: OPNsense firewall (gauges, gateways, updates, "check for updates" and "reboot" buttons), Internet connection (latency, loss, rates, traffic chart), Network devices (connected, gone, all or new), WireGuard VPN (peers).
 
 **Triggers**: gateway status changed, device arrived or left, new device on the network (once per MAC address, remembered in `/data`), VPN peer connected or not, service started or stopped, update available.
 

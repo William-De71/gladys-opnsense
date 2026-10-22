@@ -83,7 +83,7 @@ In OPNsense, open **Firewall > Rules**, edit a rule (for example "Block the kids
 
 - **OPNsense firewall**: CPU, memory and disk gauges, temperature, gateways, uptime, updates, and two buttons: check for updates, and reboot (with a confirmation).
 - **Internet connection**: latency, packet loss, download and upload of a gateway and an interface (the WAN by default), with the traffic chart once the interface device is added.
-- **Network devices**: the devices connected now, those that left, or all.
+- **Network devices**: the devices connected now, those that left, all, or the new ones (first met these 7 days, newest first).
 - **WireGuard VPN**: the peers, connected or not, and their last handshake.
 
 ### Scenes
@@ -92,7 +92,7 @@ Triggers:
 
 - **Gateway status changed**: online, degraded (latency, loss) or offline, filtered by gateway and status.
 - **Device arrived or left**: for a network device added in Gladys.
-- **New device on the network**: a MAC address never met before, once per address.
+- **New device on the network**: a MAC address never met before, once per address. The devices present at the first start are the reference and fire nothing; the configuration button **Forget known devices** starts a new reference.
 - **VPN peer connected or not**: a WireGuard peer.
 - **Service started or stopped**: Unbound, Dnsmasq, WireGuard…
 - **Update available**: a firmware check found new updates.

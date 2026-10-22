@@ -287,6 +287,12 @@ const TEXTS = {
     de: '{present} verbunden von {total} bekannten',
     es: '{present} conectado(s) de {total} conocido(s)',
   },
+  networkCaptionNew: {
+    en: '{count} new in 7 days · {present} connected',
+    fr: '{count} nouveau(x) en 7 jours · {present} connecté(s)',
+    de: '{count} neu in 7 Tagen · {present} verbunden',
+    es: '{count} nuevo(s) en 7 días · {present} conectado(s)',
+  },
   networkMore: {
     en: '{count} more',
     fr: '{count} de plus',
@@ -311,6 +317,13 @@ const TEXTS = {
     de: 'OPNsense kennt noch kein Gerät im Netzwerk.',
     es: 'OPNsense todavía no conoce ningún dispositivo en la red.',
   },
+  networkEmpty_new: {
+    en: 'No new device on the network these last 7 days.',
+    fr: 'Aucun nouvel appareil sur le réseau ces 7 derniers jours.',
+    de: 'Kein neues Gerät im Netzwerk in den letzten 7 Tagen.',
+    es: 'Ningún dispositivo nuevo en la red en los últimos 7 días.',
+  },
+  firstSeen: { en: 'new, {ago}', fr: 'nouveau, {ago}', de: 'neu, {ago}', es: 'nuevo, {ago}' },
   badgeHere: { en: 'Here', fr: 'Présent', de: 'Da', es: 'Presente' },
   badgeGone: { en: 'Gone', fr: 'Parti', de: 'Weg', es: 'Ausente' },
   noPeers: {

@@ -7,8 +7,9 @@
 //   - `internet`  one internet link: gateway status, latency, packet loss,
 //                 download and upload rates, and their history once the WAN
 //                 interface device exists in Gladys;
-//   - `network`   the devices on the network now (or the ones gone), from
-//                 the ARP table and the DHCP leases;
+//   - `network`   the devices on the network now (or the ones gone, or the
+//                 ones first met these 7 days), from the ARP table and the
+//                 DHCP leases;
 //   - `vpn`       the WireGuard peers and their last handshake.
 //
 // The contents come from the snapshots of the last reading: a widget never
@@ -33,7 +34,7 @@ const CHART_INTERVALS = [
   'last-week',
 ];
 const DEFAULT_INTERVAL = 'last-day';
-const NETWORK_SHOW = ['present', 'absent', 'all'];
+const NETWORK_SHOW = ['present', 'absent', 'all', 'new'];
 const DEFAULT_SHOW = 'present';
 const MAX_LIST_ITEMS = 8;
 const MAX_GATEWAY_ROWS = 6;
@@ -343,35 +344,14 @@ function buildInternetWidget({
 }
 
 /**
- * @description The settings of the `network` widget.
- * @param {object} [settings] - The raw settings.
- * @returns {{ show: string }} The settings.
+ * @description The hosts of the `network` widget, but the new ones.
+ * @param {Array<object>} hosts - The host snapshots.
+ * @param {string} show - present, absent or all.
+ * @param {string} language - The user language.
+ * @returns {Array<object>} The hosts to list.
  */
-const readNetworkSettings = (settings = {}) => ({
-  show: NETWORK_SHOW.includes(settings.show) ? settings.show : DEFAULT_SHOW,
-});
-
-/**
- * @description The `network` widget: hosts with a name first, then by name.
- * @param {object} options - Options.
- * @param {Array<object>} options.hosts - The host snapshots.
- * @param {string} options.language - The user language.
- * @param {number} options.now - Now, in ms.
- * @param {number} options.pollSeconds - The reading interval.
- * @param {string} [options.show] - present, absent or all.
- * @param {Set<string>} [options.created] - MACs of the hosts created in Gladys.
- * @returns {object} The content.
- */
-function buildNetworkWidget({
-  hosts,
-  language,
-  now,
-  pollSeconds,
-  show = DEFAULT_SHOW,
-  created = new Set(),
-}) {
-  const present = hosts.filter((host) => host.present);
-  const listed = hosts
+const listHosts = (hosts, show, language) =>
+  hosts
     .filter((host) => (show === 'all' ? true : show === 'present' ? host.present : !host.present))
     .filter((host) => show !== 'absent' || host.lastSeen)
     .sort((a, b) => {
@@ -383,10 +363,60 @@ function buildNetworkWidget({
       }
       return hostName(a).localeCompare(hostName(b), language);
     });
-  const caption = t('networkCaption', language, {
-    present: present.length,
-    total: hosts.length,
-  });
+
+/**
+ * @description The settings of the `network` widget.
+ * @param {object} [settings] - The raw settings.
+ * @returns {{ show: string }} The settings.
+ */
+const readNetworkSettings = (settings = {}) => ({
+  show: NETWORK_SHOW.includes(settings.show) ? settings.show : DEFAULT_SHOW,
+});
+
+/**
+ * @description The hosts first met recently, newest first. An address met
+ * before a restart and not read since has only its MAC.
+ * @param {Array<object>} hosts - The host snapshots.
+ * @param {Array<{ mac: string, firstSeen: number }>} recent - The new MACs.
+ * @returns {Array<object>} The hosts, with their `firstSeen`.
+ */
+const newHosts = (hosts, recent) => {
+  const byMac = new Map(hosts.map((host) => [host.mac, host]));
+  return recent.map(({ mac, firstSeen }) => ({
+    ...(byMac.get(mac) ?? { mac, name: null, ip: null, vendor: null, present: false }),
+    firstSeen,
+  }));
+};
+
+/**
+ * @description The `network` widget: hosts with a name first, then by name;
+ * the new ones newest first.
+ * @param {object} options - Options.
+ * @param {Array<object>} options.hosts - The host snapshots.
+ * @param {string} options.language - The user language.
+ * @param {number} options.now - Now, in ms.
+ * @param {number} options.pollSeconds - The reading interval.
+ * @param {string} [options.show] - present, absent, all or new.
+ * @param {Set<string>} [options.created] - MACs of the hosts created in Gladys.
+ * @param {Array<{ mac: string, firstSeen: number }>} [options.recent] - The MACs
+ *   first met these 7 days (store.js), newest first.
+ * @returns {object} The content.
+ */
+function buildNetworkWidget({
+  hosts,
+  language,
+  now,
+  pollSeconds,
+  show = DEFAULT_SHOW,
+  created = new Set(),
+  recent = [],
+}) {
+  const present = hosts.filter((host) => host.present);
+  const listed = show === 'new' ? newHosts(hosts, recent) : listHosts(hosts, show, language);
+  const caption =
+    show === 'new'
+      ? t('networkCaptionNew', language, { count: listed.length, present: present.length })
+      : t('networkCaption', language, { present: present.length, total: hosts.length });
   if (listed.length === 0) {
     return {
       ttl_seconds: ttlOf(pollSeconds),
@@ -417,7 +447,11 @@ function buildNetworkWidget({
           subtitle: clip(
             [
               host.ip,
-              host.present ? host.vendor : host.lastSeen && ago(host.lastSeen, now, language),
+              host.firstSeen
+                ? t('firstSeen', language, { ago: ago(host.firstSeen, now, language) })
+                : host.present
+                  ? host.vendor
+                  : host.lastSeen && ago(host.lastSeen, now, language),
             ]
               .filter(Boolean)
               .join(' · '),
