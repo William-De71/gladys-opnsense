@@ -5,6 +5,12 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/). This file is generated at
 each release from the Conventional Commits: do not edit it by hand.
 
+## [0.2.1] - 2026-10-24
+
+### Security
+
+- **security:** build the image on Node.js 24.22.1 or later ([b345b2a](https://github.com/William-De71/gladys-opnsense/commit/b345b2ad20e5465a5fb074904a2ea2ef922d78b4))
+
 ## [0.2.0] - 2026-10-22
 
 ### Added
@@ -31,6 +37,7 @@ each release from the Conventional Commits: do not edit it by hand.
 - Local transport only: the integration talks to the OPNsense API on the LAN, with an API key, and can check the HTTPS certificate.
 - English, French, German and Spanish everywhere: settings, devices, widgets, scenes and documentation.
 
+[0.2.1]: https://github.com/William-De71/gladys-opnsense/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/William-De71/gladys-opnsense/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/William-De71/gladys-opnsense/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/William-De71/gladys-opnsense/releases/tag/v0.1.0
