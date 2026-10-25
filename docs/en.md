@@ -17,7 +17,7 @@ Everything stays on your network: the integration only talks to OPNsense, never 
 
 ## Prerequisites
 
-- Gladys Assistant 5.1.0 or later.
+- Gladys Assistant 5.3.0 or later.
 - OPNsense 25.1 or later (written against the API of OPNsense 26.7), reachable from the Gladys machine.
 - An OPNsense user dedicated to Gladys, with an API key. Create it in **System > Access > Users**, then give it the privileges of the features you want (field **Privileges**):
 

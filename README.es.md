@@ -5,7 +5,7 @@
 [![Licencia: Apache-2.0](https://img.shields.io/badge/licencia-Apache--2.0-blue.svg)](LICENSE)
 [![Última versión](https://img.shields.io/github/v/release/William-De71/gladys-opnsense?sort=semver)](https://github.com/William-De71/gladys-opnsense/releases)
 [![CI](https://img.shields.io/github/actions/workflow/status/William-De71/gladys-opnsense/release.yml?branch=main&label=CI)](https://github.com/William-De71/gladys-opnsense/actions/workflows/release.yml)
-[![Gladys](https://img.shields.io/badge/Gladys-%E2%89%A5%205.1.0-2f6fb5)](https://gladysassistant.com)
+[![Gladys](https://img.shields.io/badge/Gladys-%E2%89%A5%205.3.0-2f6fb5)](https://gladysassistant.com)
 
 ![OPNsense para Gladys Assistant](cover.jpg)
 
@@ -97,7 +97,7 @@ Un cambio hecho por la propia Gladys (regla conmutada, servicio reiniciado, bús
 
 ## Requisitos
 
-- Gladys Assistant **5.1.0** o posterior (widgets y escenas): las instancias anteriores no pueden instalar la integración.
+- Gladys Assistant **5.3.0** o posterior (widgets y escenas, palabras clave del catálogo de Gladys 5.3): las instancias anteriores no pueden instalar la integración.
 - OPNsense 25.1 o posterior, y un usuario dedicado con clave de API y los privilegios indicados en la [documentación](docs/es.md#requisitos-previos).
 
 ## Instalación

@@ -17,7 +17,7 @@ Todo se queda en su red: la integración solo habla con OPNsense, nunca con una 
 
 ## Requisitos previos
 
-- Gladys Assistant 5.1.0 o posterior.
+- Gladys Assistant 5.3.0 o posterior.
 - OPNsense 25.1 o posterior (escrita a partir de la API de OPNsense 26.7), accesible desde el equipo de Gladys.
 - Un usuario de OPNsense dedicado a Gladys, con una clave de API. Créelo en **Sistema > Acceso > Usuarios** y dele los privilegios de las funciones que quiera (campo **Privilegios**):
 
