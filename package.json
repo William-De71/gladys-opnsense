@@ -1,6 +1,6 @@
 {
   "name": "gladys-opnsense",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": true,
   "description": "External Gladys Assistant integration for OPNsense firewalls: system health, gateways, interfaces, network presence, firewall rules, WireGuard, scenes and dashboard widgets.",
   "homepage": "https://github.com/William-De71/gladys-opnsense",

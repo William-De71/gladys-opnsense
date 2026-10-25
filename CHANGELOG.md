@@ -5,6 +5,12 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/). This file is generated at
 each release from the Conventional Commits: do not edit it by hand.
 
+## [0.3.0] - 2026-10-25
+
+### Added
+
+- require Gladys 5.3 and declare catalog keywords ([4bf4c51](https://github.com/William-De71/gladys-opnsense/commit/4bf4c51f947f09efb00c2da5c0da327137025aec))
+
 ## [0.2.1] - 2026-10-24
 
 ### Security
@@ -37,6 +43,7 @@ each release from the Conventional Commits: do not edit it by hand.
 - Local transport only: the integration talks to the OPNsense API on the LAN, with an API key, and can check the HTTPS certificate.
 - English, French, German and Spanish everywhere: settings, devices, widgets, scenes and documentation.
 
+[0.3.0]: https://github.com/William-De71/gladys-opnsense/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/William-De71/gladys-opnsense/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/William-De71/gladys-opnsense/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/William-De71/gladys-opnsense/compare/v0.1.0...v0.1.1
