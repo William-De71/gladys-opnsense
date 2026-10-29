@@ -195,6 +195,37 @@ function createOpnsenseClient({ getConfig, request = nodeRequest, userAgent = 'g
   const post = (path, payload, extra) => call('POST', path, payload, extra);
   const segment = (value) => encodeURIComponent(String(value));
 
+  // "Lobby: Dashboard" grants the system reads by their literal URL: snake_case
+  // since OPNsense 25.7 (system_time), camelCase before (systemTime). The router
+  // takes both, the ACL only one. On a 403 the other spelling is tried, and the
+  // one that answered is kept, so OPNsense logs no denial every round.
+  let camelCase = false;
+
+  /**
+   * @description Read a system endpoint of the dashboard, in the spelling the ACL grants.
+   * @param {string} action - The action in camelCase (systemTime).
+   * @returns {Promise<any>} The answer.
+   */
+  async function system(action) {
+    const spell = (camel) =>
+      `diagnostics/system/${camel ? action : action.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`)}`;
+    try {
+      return await get(spell(camelCase));
+    } catch (err) {
+      if (err.kind !== 'forbidden') {
+        throw err;
+      }
+      let answer;
+      try {
+        answer = await get(spell(!camelCase));
+      } catch {
+        throw err;
+      }
+      camelCase = !camelCase;
+      return answer;
+    }
+  }
+
   /**
    * @description The CPU usage, read from the event stream of the dashboard.
    * @returns {Promise<object|null>} The last sample (`{ total, user, ... }`), null if none.
@@ -227,11 +258,11 @@ function createOpnsenseClient({ getConfig, request = nodeRequest, userAgent = 'g
 
   return {
     // --- reading ---------------------------------------------------------------
-    systemInformation: () => get('diagnostics/system/system_information'),
-    systemTime: () => get('diagnostics/system/system_time'),
-    systemResources: () => get('diagnostics/system/system_resources'),
-    systemDisk: () => get('diagnostics/system/system_disk'),
-    systemTemperature: () => get('diagnostics/system/system_temperature'),
+    systemInformation: () => system('systemInformation'),
+    systemTime: () => system('systemTime'),
+    systemResources: () => system('systemResources'),
+    systemDisk: () => system('systemDisk'),
+    systemTemperature: () => system('systemTemperature'),
     cpuUsage,
     // GET reads the result of the last check, without contacting the mirror.
     firmwareStatus: () => get('core/firmware/status'),

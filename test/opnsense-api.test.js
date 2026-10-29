@@ -43,6 +43,32 @@ test('no request without an address and a key pair; the secret never shows in er
   await assert.rejects(failing.systemTime(), (err) => !err.message.includes('secret'));
 });
 
+test('before 25.7, "Lobby: Dashboard" grants the camelCase spelling: kept once it answers', async () => {
+  const request = opnsense({ statuses: { 'diagnostics/system/system_time': 403 } });
+  request.answers['diagnostics/system/systemTime'] =
+    request.answers['diagnostics/system/system_time'];
+  const api = createOpnsenseClient({ getConfig: () => config, request });
+  assert.deepEqual(await api.systemTime(), request.answers['diagnostics/system/systemTime']);
+  await api.systemTime();
+  assert.deepEqual(
+    request.calls.map((call) => call.path),
+    [
+      'diagnostics/system/system_time',
+      'diagnostics/system/systemTime',
+      'diagnostics/system/systemTime',
+    ],
+  );
+  // Neither spelling granted: the 403 of the first one.
+  const denied = opnsense({
+    statuses: { 'diagnostics/system/system_time': 403, 'diagnostics/system/systemTime': 403 },
+  });
+  const none = createOpnsenseClient({ getConfig: () => config, request: denied });
+  await assert.rejects(
+    none.systemTime(),
+    (err) => err.kind === 'forbidden' && err.message.includes('system_time'),
+  );
+});
+
 test('commands are POSTs with a JSON body, path segments encoded', async () => {
   const request = opnsense();
   const api = createOpnsenseClient({ getConfig: () => config, request });
