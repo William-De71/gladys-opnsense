@@ -5,6 +5,12 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions
 follow [Semantic Versioning](https://semver.org/). This file is generated at
 each release from the Conventional Commits: do not edit it by hand.
 
+## [0.3.1] - 2026-10-29
+
+### Fixed
+
+- read the dashboard endpoints with the camelCase ACL of OPNsense before 25.7 ([3a8a494](https://github.com/William-De71/gladys-opnsense/commit/3a8a49464a2034afaba36bee7ab8510c395366e2))
+
 ## [0.3.0] - 2026-10-25
 
 ### Added
@@ -43,6 +49,7 @@ each release from the Conventional Commits: do not edit it by hand.
 - Local transport only: the integration talks to the OPNsense API on the LAN, with an API key, and can check the HTTPS certificate.
 - English, French, German and Spanish everywhere: settings, devices, widgets, scenes and documentation.
 
+[0.3.1]: https://github.com/William-De71/gladys-opnsense/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/William-De71/gladys-opnsense/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/William-De71/gladys-opnsense/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/William-De71/gladys-opnsense/compare/v0.1.1...v0.2.0
