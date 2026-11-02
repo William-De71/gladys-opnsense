@@ -35,7 +35,7 @@ Tout reste sur votre réseau : l'intégration ne parle qu'à OPNsense, jamais à
 | Redémarrage                                                       | Diagnostics: Reboot System                                             |
 | Wake-on-LAN (plugin os-wol)                                       | Services: Wake on LAN                                                  |
 
-Un droit non accordé désactive simplement sa fonction, « Lobby: Dashboard » compris : les passerelles, les interfaces et les appareils du réseau marchent sans lui. « System: Firmware » permet aussi d'installer les mises à jour par l'API : ne l'accordez que si vous voulez la recherche de mises à jour. Les noms des droits sont ceux de l'interface anglaise d'OPNsense.
+Un droit non accordé désactive simplement sa fonction, « Lobby: Dashboard » compris : les passerelles, les interfaces et les appareils du réseau marchent sans lui. OPNsense note alors environ une fois par heure une ligne « not accessible » par droit manquant : décochez sa fonction dans **Fonctions lues** pour ne plus l'interroger. « System: Firmware » permet aussi d'installer les mises à jour par l'API : ne l'accordez que si vous voulez la recherche de mises à jour. Les noms des droits sont ceux de l'interface anglaise d'OPNsense.
 
 Dans la page de l'utilisateur, section **Clés d'API**, cliquez sur **+** : un fichier `key.txt` est téléchargé, avec une ligne `key=` et une ligne `secret=`.
 
@@ -43,17 +43,18 @@ Dans la page de l'utilisateur, section **Clés d'API**, cliquez sur **+** : un f
 
 Dans Gladys, ouvrez **Intégrations > OPNsense**, installez-la, puis remplissez :
 
-| Champ                        | Quoi saisir                                                                                                   |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Adresse d'OPNsense           | L'adresse de l'interface web, par exemple `https://192.168.1.1` (ajoutez le port s'il n'est pas 443).         |
-| Clé d'API                    | La ligne `key=` de `key.txt`.                                                                                 |
-| Secret de l'API              | La ligne `secret=` de `key.txt`. Il n'est plus jamais affiché ni écrit dans les logs.                         |
-| Vérifier le certificat       | Laissez décoché avec le certificat auto-signé d'OPNsense ; cochez-le avec un certificat valide.               |
-| Intervalle de lecture        | De 10 à 300 secondes, 30 par défaut.                                                                          |
-| Appareils du réseau proposés | Les appareils proposés à la découverte : ceux qui ont un nom (par défaut), tous, ou aucun.                    |
-| Délai d'absence              | Minutes sans réponse avant qu'un appareil soit absent, 5 par défaut.                                          |
-| Catégorie des règles         | Les règles de pare-feu de cette catégorie deviennent des interrupteurs (`gladys` par défaut ; vide : aucune). |
-| Langue des textes            | Langue des noms, états et résumés de scènes ; automatique suit votre tableau de bord.                         |
+| Champ                        | Quoi saisir                                                                                                                                                                                 |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Adresse d'OPNsense           | L'adresse de l'interface web, par exemple `https://192.168.1.1` (ajoutez le port s'il n'est pas 443).                                                                                       |
+| Clé d'API                    | La ligne `key=` de `key.txt`.                                                                                                                                                               |
+| Secret de l'API              | La ligne `secret=` de `key.txt`. Il n'est plus jamais affiché ni écrit dans les logs.                                                                                                       |
+| Vérifier le certificat       | Laissez décoché avec le certificat auto-signé d'OPNsense ; cochez-le avec un certificat valide.                                                                                             |
+| Intervalle de lecture        | De 10 à 300 secondes, 30 par défaut.                                                                                                                                                        |
+| Appareils du réseau proposés | Les appareils proposés à la découverte : ceux qui ont un nom (par défaut), tous, ou aucun.                                                                                                  |
+| Délai d'absence              | Minutes sans réponse avant qu'un appareil soit absent, 5 par défaut.                                                                                                                        |
+| Catégorie des règles         | Les règles de pare-feu de cette catégorie deviennent des interrupteurs (`gladys` par défaut ; vide : aucune).                                                                               |
+| Fonctions lues               | Toutes cochées par défaut. Décochez ce qui ne vous sert pas : OPNsense n'est plus interrogé pour cela, et son journal n'affiche plus de ligne « not accessible » pour un droit non accordé. |
+| Langue des textes            | Langue des noms, états et résumés de scènes ; automatique suit votre tableau de bord.                                                                                                       |
 
 Cliquez sur **Tester la connexion** : Gladys affiche le nom et la version de votre OPNsense.
 

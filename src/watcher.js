@@ -13,6 +13,11 @@
 // read failing keeps its previous snapshot. A 403 on the probe still proves
 // the address and the key: only "Lobby: Dashboard" is not granted, and the
 // round goes on without the health of the firewall.
+//
+// Only the ticked `features` are read: an endpoint never asked leaves no
+// "not accessible" line in the OPNsense log. With the firewall unticked there
+// is no probe: the round fails when no read answered and one of them could
+// not reach OPNsense or was refused the key.
 // -----------------------------------------------------------------------------
 
 import {
@@ -75,6 +80,9 @@ function createWatcher({
   let fetchedAt = null;
   // endpoint -> time it was found missing or forbidden
   let missing = new Map();
+  // Within a round: whether OPNsense answered a read, the first other failure.
+  let answered = false;
+  let failure = null;
   let timer = null;
   let running = null;
   let started = false;
@@ -92,19 +100,29 @@ function createWatcher({
     try {
       const answer = await api[name]();
       missing.delete(name);
+      answered = true;
       return answer;
     } catch (err) {
       if (err.kind === 'not_found' || err.kind === 'forbidden') {
+        answered = true;
         if (since === undefined) {
           logger.info(`OPNsense ${name}: ${err.message}, skipped`);
         }
         missing.set(name, now());
       } else {
         logger.warn(`OPNsense ${name}: ${err.message}`);
+        failure = failure ?? err;
       }
       return undefined;
     }
   }
+
+  /**
+   * @description Whether a feature is ticked in the configuration.
+   * @param {string} feature - A value of FEATURES (config.js).
+   * @returns {boolean} True when it is read.
+   */
+  const on = (feature) => getConfig().features.includes(feature);
 
   /**
    * @description The DHCP leases: dnsmasq (default since 25.1), else Kea.
@@ -130,11 +148,12 @@ function createWatcher({
     }
     const { ruleCategory } = getConfig();
     const next = {
-      information: await readOptional('systemInformation'),
-      disk: await readOptional('systemDisk'),
-      firmware: await readOptional('firmwareStatus'),
-      leases: await readLeases(),
-      categories: ruleCategory ? await readOptional('ruleCategories') : undefined,
+      information: on('firewall') ? await readOptional('systemInformation') : undefined,
+      disk: on('firewall') ? await readOptional('systemDisk') : undefined,
+      firmware: on('firmware') ? await readOptional('firmwareStatus') : undefined,
+      // The leases only name the hosts of the ARP table.
+      leases: on('hosts') && on('leases') ? await readLeases() : undefined,
+      categories: on('rules') && ruleCategory ? await readOptional('ruleCategories') : undefined,
     };
     // A failed read keeps the previous answer.
     slow = Object.fromEntries(
@@ -149,19 +168,26 @@ function createWatcher({
    * @returns {Promise<void>}
    */
   async function readAll(forceSlow) {
+    answered = false;
+    failure = null;
     // The probe: a failure here fails the round, but for a missing privilege.
     let time;
-    try {
-      time = await api.systemTime();
+    if (on('firewall')) {
+      try {
+        time = await api.systemTime();
+        dashboard = true;
+      } catch (err) {
+        if (err.kind !== 'forbidden') {
+          throw err;
+        }
+        if (dashboard) {
+          logger.info(`OPNsense systemTime: ${err.message}, firewall health skipped`);
+        }
+        dashboard = false;
+      }
+    } else {
+      // Unticked, not refused: the status does not ask for the privilege.
       dashboard = true;
-    } catch (err) {
-      if (err.kind !== 'forbidden') {
-        throw err;
-      }
-      if (dashboard) {
-        logger.info(`OPNsense systemTime: ${err.message}, firewall health skipped`);
-      }
-      dashboard = false;
     }
     await readSlow(forceSlow);
     const config = getConfig();
@@ -177,11 +203,13 @@ function createWatcher({
     };
 
     // --- firewall ---------------------------------------------------------------
-    const [resources, temperature, cpu] = [
-      await readOptional('systemResources'),
-      await readOptional('systemTemperature'),
-      await readOptional('cpuUsage'),
-    ];
+    const [resources, temperature, cpu] = on('firewall')
+      ? [
+          await readOptional('systemResources'),
+          await readOptional('systemTemperature'),
+          await readOptional('cpuUsage'),
+        ]
+      : [];
     system = readSystem({ ...slow, time, resources, temperature, cpu });
     const nextFirmware = slow.firmware ? readFirmware(slow.firmware) : null;
     if (diffFirmware(firmware, nextFirmware)) {
@@ -190,7 +218,7 @@ function createWatcher({
     firmware = nextFirmware;
 
     // --- gateways ---------------------------------------------------------------
-    const gatewayAnswer = await readOptional('gatewayStatus');
+    const gatewayAnswer = on('gateways') ? await readOptional('gatewayStatus') : undefined;
     if (gatewayAnswer !== undefined) {
       const next = new Map();
       for (const gateway of readGateways(gatewayAnswer)) {
@@ -204,16 +232,15 @@ function createWatcher({
     }
 
     // --- interfaces -------------------------------------------------------------
-    const [info, traffic] = [
-      await readOptional('interfacesInfo'),
-      await readOptional('trafficInterface'),
-    ];
+    const [info, traffic] = on('interfaces')
+      ? [await readOptional('interfacesInfo'), await readOptional('trafficInterface')]
+      : [];
     if (info !== undefined) {
       interfaces = new Map(readInterfaces(info, traffic, interfaces).map((i) => [i.id, i]));
     }
 
     // --- hosts and presence -----------------------------------------------------
-    const arp = await readOptional('arp');
+    const arp = on('hosts') ? await readOptional('arp') : undefined;
     if (arp !== undefined) {
       const absenceMs = config.absenceDelay * 60000;
       const read = new Map(
@@ -255,7 +282,7 @@ function createWatcher({
     }
 
     // --- WireGuard --------------------------------------------------------------
-    const wg = await readOptional('wireguardShow');
+    const wg = on('wireguard') ? await readOptional('wireguardShow') : undefined;
     if (wg !== undefined) {
       const next = new Map();
       for (const peer of readPeers(wg)) {
@@ -269,7 +296,7 @@ function createWatcher({
     }
 
     // --- services ---------------------------------------------------------------
-    const serviceAnswer = await readOptional('services');
+    const serviceAnswer = on('services') ? await readOptional('services') : undefined;
     if (serviceAnswer !== undefined) {
       const next = new Map();
       for (const service of readServices(serviceAnswer)) {
@@ -282,7 +309,7 @@ function createWatcher({
     }
 
     // --- rules ------------------------------------------------------------------
-    if (config.ruleCategory) {
+    if (on('rules') && config.ruleCategory) {
       const ruleAnswer = await readOptional('rules');
       if (ruleAnswer !== undefined) {
         rules = new Map(
@@ -294,6 +321,11 @@ function createWatcher({
       rules = new Map();
     }
 
+    if (!on('firewall') && !answered && failure) {
+      // Nothing was read: the slow parts are asked again on the next round.
+      slowAt = null;
+      throw failure;
+    }
     fetchedAt = at;
     await onRound(round);
   }

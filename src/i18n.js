@@ -386,6 +386,12 @@ const TEXTS = {
     de: 'OPNsense {version}: {gateways}/{total} Gateway(s) online, {hosts} Gerät(e) im Netzwerk.',
     es: 'OPNsense {version}: {gateways}/{total} puerta(s) de enlace en línea, {hosts} dispositivo(s) en la red.',
   },
+  statusConnectedNoVersion: {
+    en: 'OPNsense: {gateways}/{total} gateway(s) online, {hosts} device(s) on the network.',
+    fr: 'OPNsense : {gateways}/{total} passerelle(s) en ligne, {hosts} appareil(s) sur le réseau.',
+    de: 'OPNsense: {gateways}/{total} Gateway(s) online, {hosts} Gerät(e) im Netzwerk.',
+    es: 'OPNsense: {gateways}/{total} puerta(s) de enlace en línea, {hosts} dispositivo(s) en la red.',
+  },
   statusInvalidKey: {
     en: 'OPNsense refuses the API key: check the key and its secret.',
     fr: 'OPNsense refuse la clé d’API : vérifiez la clé et son secret.',
@@ -427,6 +433,12 @@ const TEXTS = {
     fr: 'Connecté à {name} (OPNsense {version}).',
     de: 'Verbunden mit {name} (OPNsense {version}).',
     es: 'Conectado a {name} (OPNsense {version}).',
+  },
+  testReachable: {
+    en: 'Connected to OPNsense: the address and the API key are accepted.',
+    fr: 'Connecté à OPNsense : l’adresse et la clé d’API sont acceptées.',
+    de: 'Mit OPNsense verbunden: Adresse und API-Schlüssel werden akzeptiert.',
+    es: 'Conectado a OPNsense: la dirección y la clave de API son aceptadas.',
   },
   testNoDashboard: {
     en: 'Connected to OPNsense, but the API user lacks "Lobby: Dashboard": no CPU, memory, disk, temperature nor uptime. The other functions follow their own privileges.',

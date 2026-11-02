@@ -381,9 +381,14 @@ function createApp(
       );
       refreshWidgets();
       const system = watcher.system();
+      let status = 'statusNoDashboard';
+      if (watcher.hasDashboard()) {
+        // No version without the firewall health nor the updates read.
+        status = system?.version ? 'statusConnected' : 'statusConnectedNoVersion';
+      }
       await reportStatus(
         true,
-        all(watcher.hasDashboard() ? 'statusConnected' : 'statusNoDashboard', {
+        all(status, {
           version: system?.version ?? '?',
           gateways: watcher.gateways().filter((g) => g.status === 'online').length,
           total: watcher.gateways().length,
@@ -674,7 +679,11 @@ function createApp(
         version: parseVersion(information?.versions?.[0]) ?? '?',
       });
     } catch (err) {
-      return err.dashboardOnly ? all('testNoDashboard') : errorMessage(err);
+      if (err.dashboardOnly) {
+        // The health of the firewall unticked: the privilege is not wanted.
+        return all(config.features.includes('firewall') ? 'testNoDashboard' : 'testReachable');
+      }
+      return errorMessage(err);
     }
   });
 

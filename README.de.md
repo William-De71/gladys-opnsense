@@ -117,6 +117,7 @@ Eine Änderung durch Gladys selbst (geschaltete Regel, neu gestarteter Dienst, v
 | Angebotene Netzwerkgeräte     | mit Namen   | mit Namen, alle, keine                                              |
 | Abwesenheitsverzögerung       | 5 Min.      | 1 bis 60 Min.                                                       |
 | Kategorie der Regeln          | `gladys`    | Leer: kein Regel-Schalter                                           |
+| Gelesene Funktionen           | alle        | Ohne Haken: OPNsense wird nie gefragt                               |
 | Sprache der Texte             | automatisch | Namen, Zustände und Szenen-Zusammenfassungen                        |
 
 ## Verwendung

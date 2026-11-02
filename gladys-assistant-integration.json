@@ -135,6 +135,117 @@
       }
     },
     {
+      "key": "features",
+      "type": "multi_select",
+      "label": {
+        "en": "Functions read",
+        "fr": "Fonctions lues",
+        "de": "Gelesene Funktionen",
+        "es": "Funciones leídas"
+      },
+      "description": {
+        "en": "Untick what you do not use: OPNsense is no longer asked for it, and its log no longer shows “not accessible” lines for privileges you did not grant.",
+        "fr": "Décochez ce qui ne vous sert pas : OPNsense n’est plus interrogé pour cela, et son journal n’affiche plus de lignes « not accessible » pour les droits non accordés.",
+        "de": "Entfernen Sie den Haken bei allem, was Sie nicht nutzen: OPNsense wird dafür nicht mehr abgefragt, und sein Protokoll zeigt keine „not accessible“-Zeilen mehr für nicht erteilte Rechte.",
+        "es": "Desmarque lo que no use: ya no se consulta OPNsense para ello, y su registro ya no muestra líneas «not accessible» para los privilegios no concedidos."
+      },
+      "options": [
+        {
+          "value": "firewall",
+          "label": {
+            "en": "Firewall health (Lobby: Dashboard)",
+            "fr": "Santé du pare-feu (Lobby: Dashboard)",
+            "de": "Zustand der Firewall (Lobby: Dashboard)",
+            "es": "Estado del cortafuegos (Lobby: Dashboard)"
+          }
+        },
+        {
+          "value": "firmware",
+          "label": {
+            "en": "Updates (System: Firmware)",
+            "fr": "Mises à jour (System: Firmware)",
+            "de": "Updates (System: Firmware)",
+            "es": "Actualizaciones (System: Firmware)"
+          }
+        },
+        {
+          "value": "gateways",
+          "label": {
+            "en": "Gateways (System: Gateways)",
+            "fr": "Passerelles (System: Gateways)",
+            "de": "Gateways (System: Gateways)",
+            "es": "Puertas de enlace (System: Gateways)"
+          }
+        },
+        {
+          "value": "interfaces",
+          "label": {
+            "en": "Interfaces (Status: Interfaces, Reporting: Traffic)",
+            "fr": "Interfaces (Status: Interfaces, Reporting: Traffic)",
+            "de": "Schnittstellen (Status: Interfaces, Reporting: Traffic)",
+            "es": "Interfaces (Status: Interfaces, Reporting: Traffic)"
+          }
+        },
+        {
+          "value": "hosts",
+          "label": {
+            "en": "Devices of the network (Diagnostics: ARP Table)",
+            "fr": "Appareils du réseau (Diagnostics: ARP Table)",
+            "de": "Netzwerkgeräte (Diagnostics: ARP Table)",
+            "es": "Dispositivos de la red (Diagnostics: ARP Table)"
+          }
+        },
+        {
+          "value": "leases",
+          "label": {
+            "en": "Their DHCP names (Services: Dnsmasq DNS/DHCP or DHCP: Kea(v4))",
+            "fr": "Leurs noms DHCP (Services: Dnsmasq DNS/DHCP ou DHCP: Kea(v4))",
+            "de": "Ihre DHCP-Namen (Services: Dnsmasq DNS/DHCP oder DHCP: Kea(v4))",
+            "es": "Sus nombres DHCP (Services: Dnsmasq DNS/DHCP o DHCP: Kea(v4))"
+          }
+        },
+        {
+          "value": "wireguard",
+          "label": {
+            "en": "WireGuard (VPN: WireGuard: Status)",
+            "fr": "WireGuard (VPN: WireGuard: Status)",
+            "de": "WireGuard (VPN: WireGuard: Status)",
+            "es": "WireGuard (VPN: WireGuard: Status)"
+          }
+        },
+        {
+          "value": "services",
+          "label": {
+            "en": "Services (Status: Services)",
+            "fr": "Services (Status: Services)",
+            "de": "Dienste (Status: Services)",
+            "es": "Servicios (Status: Services)"
+          }
+        },
+        {
+          "value": "rules",
+          "label": {
+            "en": "Rule switches (Firewall: Rules [new], Firewall: Categories)",
+            "fr": "Interrupteurs de règles (Firewall: Rules [new], Firewall: Categories)",
+            "de": "Regelschalter (Firewall: Rules [new], Firewall: Categories)",
+            "es": "Interruptores de reglas (Firewall: Rules [new], Firewall: Categories)"
+          }
+        }
+      ],
+      "default": [
+        "firewall",
+        "firmware",
+        "gateways",
+        "interfaces",
+        "hosts",
+        "leases",
+        "wireguard",
+        "services",
+        "rules"
+      ],
+      "required": false
+    },
+    {
       "key": "poll_interval",
       "type": "number",
       "label": {

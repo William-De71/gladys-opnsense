@@ -117,6 +117,7 @@ Un cambio hecho por la propia Gladys (regla conmutada, servicio reiniciado, bús
 | Dispositivos de red ofrecidos | con nombre  | con nombre, todos, ninguno                                    |
 | Retardo de ausencia           | 5 min       | De 1 a 60 min                                                 |
 | Categoría de las reglas       | `gladys`    | Vacío: ningún interruptor de regla                            |
+| Funciones leídas              | todas       | Desmarcada: nunca se consulta a OPNsense                      |
 | Idioma de los textos          | automático  | Nombres, estados y resúmenes de escenas                       |
 
 ## Uso

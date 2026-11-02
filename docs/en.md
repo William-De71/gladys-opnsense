@@ -35,7 +35,7 @@ Everything stays on your network: the integration only talks to OPNsense, never 
 | Reboot                                                           | Diagnostics: Reboot System                                              |
 | Wake-on-LAN (os-wol plugin)                                      | Services: Wake on LAN                                                   |
 
-A privilege you do not grant simply turns its feature off, "Lobby: Dashboard" included: the gateways, interfaces and devices of the network still work without it. "System: Firmware" also allows installing updates from the API: grant it only if you want the update check.
+A privilege you do not grant simply turns its feature off, "Lobby: Dashboard" included: the gateways, interfaces and devices of the network still work without it. OPNsense then logs a “not accessible” line about once an hour for each privilege missing: untick its function in **Functions read** to stop asking. "System: Firmware" also allows installing updates from the API: grant it only if you want the update check.
 
 In the user page, under **API keys**, click **+**: a `key.txt` file is downloaded, with a `key=` line and a `secret=` line.
 
@@ -43,17 +43,18 @@ In the user page, under **API keys**, click **+**: a `key.txt` file is downloade
 
 In Gladys, open **Integrations > OPNsense**, install it, then fill in:
 
-| Field                   | What to enter                                                                                        |
-| ----------------------- | ---------------------------------------------------------------------------------------------------- |
-| OPNsense address        | The address of the web interface, for example `https://192.168.1.1` (add the port if it is not 443). |
-| API key                 | The `key=` line of `key.txt`.                                                                        |
-| API secret              | The `secret=` line of `key.txt`. It is never shown again nor written in the logs.                    |
-| Verify the certificate  | Leave unticked with the self-signed certificate of OPNsense; tick it with a valid certificate.       |
-| Reading interval        | 10 to 300 seconds, 30 by default.                                                                    |
-| Network devices offered | The hosts offered on the Discovery screen: those with a name (default), all, or none.                |
-| Absence delay           | Minutes without answer before a device is absent, 5 by default.                                      |
-| Category of the rules   | The firewall rules of this category become switches (`gladys` by default; empty: none).              |
-| Language of the texts   | Language of the names, states and scene summaries; automatic follows your dashboard.                 |
+| Field                   | What to enter                                                                                                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OPNsense address        | The address of the web interface, for example `https://192.168.1.1` (add the port if it is not 443).                                                                |
+| API key                 | The `key=` line of `key.txt`.                                                                                                                                       |
+| API secret              | The `secret=` line of `key.txt`. It is never shown again nor written in the logs.                                                                                   |
+| Verify the certificate  | Leave unticked with the self-signed certificate of OPNsense; tick it with a valid certificate.                                                                      |
+| Reading interval        | 10 to 300 seconds, 30 by default.                                                                                                                                   |
+| Network devices offered | The hosts offered on the Discovery screen: those with a name (default), all, or none.                                                                               |
+| Absence delay           | Minutes without answer before a device is absent, 5 by default.                                                                                                     |
+| Category of the rules   | The firewall rules of this category become switches (`gladys` by default; empty: none).                                                                             |
+| Functions read          | All ticked by default. Untick what you do not use: OPNsense is no longer asked for it, so its log shows no “not accessible” line for a privilege you did not grant. |
+| Language of the texts   | Language of the names, states and scene summaries; automatic follows your dashboard.                                                                                |
 
 Click **Test the connection**: Gladys shows the name and the version of your OPNsense.
 

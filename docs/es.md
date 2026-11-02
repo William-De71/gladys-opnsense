@@ -35,7 +35,7 @@ Todo se queda en su red: la integración solo habla con OPNsense, nunca con una 
 | Reinicio                                                                       | Diagnostics: Reboot System                                           |
 | Wake-on-LAN (plugin os-wol)                                                    | Services: Wake on LAN                                                |
 
-Un privilegio no concedido simplemente desactiva su función, «Lobby: Dashboard» incluido: las puertas de enlace, las interfaces y los dispositivos de la red funcionan sin él. «System: Firmware» también permite instalar actualizaciones por la API: concédalo solo si quiere la búsqueda de actualizaciones. Los nombres de los privilegios son los de la interfaz en inglés de OPNsense.
+Un privilegio no concedido simplemente desactiva su función, «Lobby: Dashboard» incluido: las puertas de enlace, las interfaces y los dispositivos de la red funcionan sin él. OPNsense registra entonces una línea «not accessible» aproximadamente una vez por hora por cada privilegio que falta: desmarque su función en **Funciones leídas** para dejar de consultarlo. «System: Firmware» también permite instalar actualizaciones por la API: concédalo solo si quiere la búsqueda de actualizaciones. Los nombres de los privilegios son los de la interfaz en inglés de OPNsense.
 
 En la página del usuario, sección **Claves de API**, pulse **+**: se descarga un archivo `key.txt`, con una línea `key=` y una línea `secret=`.
 
@@ -43,17 +43,18 @@ En la página del usuario, sección **Claves de API**, pulse **+**: se descarga 
 
 En Gladys, abra **Integraciones > OPNsense**, instálela y rellene:
 
-| Campo                         | Qué introducir                                                                                                      |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Dirección de OPNsense         | La dirección de la interfaz web, por ejemplo `https://192.168.1.1` (añada el puerto si no es el 443).               |
-| Clave de API                  | La línea `key=` de `key.txt`.                                                                                       |
-| Secreto de la API             | La línea `secret=` de `key.txt`. No se vuelve a mostrar ni se escribe en los registros.                             |
-| Verificar el certificado      | Déjelo sin marcar con el certificado autofirmado de OPNsense; márquelo con un certificado válido.                   |
-| Intervalo de lectura          | De 10 a 300 segundos, 30 por defecto.                                                                               |
-| Dispositivos de red ofrecidos | Los dispositivos ofrecidos en el descubrimiento: los que tienen nombre (por defecto), todos o ninguno.              |
-| Retardo de ausencia           | Minutos sin respuesta antes de que un dispositivo esté ausente, 5 por defecto.                                      |
-| Categoría de las reglas       | Las reglas del cortafuegos de esta categoría se convierten en interruptores (`gladys` por defecto; vacío: ninguna). |
-| Idioma de los textos          | Idioma de los nombres, estados y resúmenes de escenas; automático sigue su panel.                                   |
+| Campo                         | Qué introducir                                                                                                                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dirección de OPNsense         | La dirección de la interfaz web, por ejemplo `https://192.168.1.1` (añada el puerto si no es el 443).                                                                           |
+| Clave de API                  | La línea `key=` de `key.txt`.                                                                                                                                                   |
+| Secreto de la API             | La línea `secret=` de `key.txt`. No se vuelve a mostrar ni se escribe en los registros.                                                                                         |
+| Verificar el certificado      | Déjelo sin marcar con el certificado autofirmado de OPNsense; márquelo con un certificado válido.                                                                               |
+| Intervalo de lectura          | De 10 a 300 segundos, 30 por defecto.                                                                                                                                           |
+| Dispositivos de red ofrecidos | Los dispositivos ofrecidos en el descubrimiento: los que tienen nombre (por defecto), todos o ninguno.                                                                          |
+| Retardo de ausencia           | Minutos sin respuesta antes de que un dispositivo esté ausente, 5 por defecto.                                                                                                  |
+| Categoría de las reglas       | Las reglas del cortafuegos de esta categoría se convierten en interruptores (`gladys` por defecto; vacío: ninguna).                                                             |
+| Funciones leídas              | Todas marcadas por defecto. Desmarque lo que no use: ya no se consulta OPNsense para ello, y su registro ya no muestra la línea «not accessible» de un privilegio no concedido. |
+| Idioma de los textos          | Idioma de los nombres, estados y resúmenes de escenas; automático sigue su panel.                                                                                               |
 
 Pulse **Probar la conexión**: Gladys muestra el nombre y la versión de su OPNsense.
 

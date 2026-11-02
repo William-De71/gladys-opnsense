@@ -117,6 +117,7 @@ Un changement fait par Gladys elle-même (règle basculée, service redémarré,
 | Appareils du réseau proposés | avec un nom | avec un nom, tous, aucun                                       |
 | Délai d'absence              | 5 min       | De 1 à 60 min                                                  |
 | Catégorie des règles         | `gladys`    | Vide : aucun interrupteur de règle                             |
+| Fonctions lues               | toutes      | Décochée : jamais demandée à OPNsense                          |
 | Langue des textes            | automatique | Noms, états et résumés de scènes                               |
 
 ## Utilisation

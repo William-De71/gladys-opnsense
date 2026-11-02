@@ -8,6 +8,7 @@ import {
   readLanguage,
   POLL_INTERVAL,
   ABSENCE_DELAY,
+  FEATURES,
 } from '../src/config.js';
 
 test('the address: https by default, no path, a port kept', () => {
@@ -34,6 +35,16 @@ test('defaults, bounds and types of every field', () => {
   assert.equal(normalizeConfig({ network_devices: 'everything' }).networkDevices, 'named');
   assert.equal(normalizeConfig({ rule_category: '' }).ruleCategory, '', 'empty turns rules off');
   assert.equal(normalizeConfig({ language: 'it' }).language, 'auto');
+});
+
+test('features: all when never saved, known values only, none when all unticked', () => {
+  assert.deepEqual(normalizeConfig({}).features, FEATURES);
+  assert.deepEqual(normalizeConfig({ features: 'hosts' }).features, FEATURES);
+  assert.deepEqual(normalizeConfig({ features: ['hosts', 'tv', 'gateways'] }).features, [
+    'gateways',
+    'hosts',
+  ]);
+  assert.deepEqual(normalizeConfig({ features: [] }).features, []);
 });
 
 test('credentials need an address, a key and a secret; a secret is kept as typed', () => {

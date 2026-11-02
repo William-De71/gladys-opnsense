@@ -14,6 +14,9 @@
 //                        devices: `named` (a DHCP or DNS name), `all`, `none`;
 //   - `absence_delay`    minutes a host must be gone before it is absent;
 //   - `rule_category`    firewall rules of this category become switches;
+//   - `features`         the parts of OPNsense read on every round (multi
+//                        select): an unticked one is never asked, so it leaves
+//                        no "not accessible" line in the OPNsense log;
 //   - `language`         language of the texts Gladys does not ask for in a
 //                        language (feature names, scene summaries): `auto`
 //                        follows the language of the last widget request.
@@ -34,6 +37,20 @@ const ABSENCE_DELAY = { min: 1, max: 60, default: 5 };
 const NETWORK_DEVICES = ['named', 'all', 'none'];
 const DEFAULT_NETWORK_DEVICES = 'named';
 const DEFAULT_RULE_CATEGORY = 'gladys';
+// Values of `features`, each one the privilege of the documentation table.
+// Actions run on demand only (reboot, alias, Wake-on-LAN) are not listed:
+// they ask OPNsense only when a scene or a button runs them.
+const FEATURES = [
+  'firewall',
+  'firmware',
+  'gateways',
+  'interfaces',
+  'hosts',
+  'leases',
+  'wireguard',
+  'services',
+  'rules',
+];
 const AUTO_LANGUAGE = 'auto';
 const INTERNAL_KEYS = { language: 'last_language' };
 
@@ -99,10 +116,26 @@ function readBoolean(raw, fallback) {
 }
 
 /**
+ * @description Read the ticked features; every one when the key was never
+ * saved (installations older than the field read everything).
+ * @param {unknown} raw - The raw value.
+ * @returns {Array<string>} Known values, in the order of FEATURES.
+ * @example
+ * readFeatures(['gateways', 'hosts']); // -> ['gateways', 'hosts']
+ */
+function readFeatures(raw) {
+  if (!Array.isArray(raw)) {
+    return [...FEATURES];
+  }
+  return FEATURES.filter((feature) => raw.includes(feature));
+}
+
+/**
  * @description Normalize the raw config object from the host API.
  * @param {object} [rawConfig] - The raw config values.
  * @returns {object} The config: `{ url, apiKey, apiSecret, verifyTls,
- * pollInterval (s), networkDevices, absenceDelay (min), ruleCategory, language }`.
+ * pollInterval (s), networkDevices, absenceDelay (min), ruleCategory, features,
+ * language }`.
  * @example
  * normalizeConfig({ url: '192.168.1.1', api_key: 'k', api_secret: 's' });
  */
@@ -124,6 +157,7 @@ function normalizeConfig(rawConfig = {}) {
       config.rule_category === undefined || config.rule_category === null
         ? DEFAULT_RULE_CATEGORY
         : readString(config.rule_category),
+    features: readFeatures(config.features),
     language: isLanguage(config.language) ? config.language : AUTO_LANGUAGE,
   };
 }
@@ -153,6 +187,7 @@ export {
   ABSENCE_DELAY,
   NETWORK_DEVICES,
   DEFAULT_RULE_CATEGORY,
+  FEATURES,
   AUTO_LANGUAGE,
   INTERNAL_KEYS,
   normalizeUrl,

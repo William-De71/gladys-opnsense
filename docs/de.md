@@ -35,7 +35,7 @@ Alles bleibt in Ihrem Netzwerk: Die Integration spricht nur mit OPNsense, nie mi
 | Neustart                                                                  | Diagnostics: Reboot System                                                |
 | Wake-on-LAN (Plugin os-wol)                                               | Services: Wake on LAN                                                     |
 
-Ein nicht erteiltes Recht schaltet einfach seine Funktion ab, auch „Lobby: Dashboard": Gateways, Schnittstellen und Netzwerkgeräte funktionieren ohne es. „System: Firmware" erlaubt auch, Updates über die API zu installieren: Erteilen Sie es nur, wenn Sie die Update-Prüfung wollen. Die Namen der Rechte sind die der englischen Oberfläche von OPNsense.
+Ein nicht erteiltes Recht schaltet einfach seine Funktion ab, auch „Lobby: Dashboard": Gateways, Schnittstellen und Netzwerkgeräte funktionieren ohne es. OPNsense protokolliert dann etwa einmal pro Stunde eine „not accessible“-Zeile pro fehlendem Recht: Entfernen Sie den Haken bei seiner Funktion unter **Gelesene Funktionen**, damit nicht mehr gefragt wird. „System: Firmware" erlaubt auch, Updates über die API zu installieren: Erteilen Sie es nur, wenn Sie die Update-Prüfung wollen. Die Namen der Rechte sind die der englischen Oberfläche von OPNsense.
 
 Klicken Sie auf der Benutzerseite unter **API-Schlüssel** auf **+**: Eine Datei `key.txt` wird heruntergeladen, mit einer Zeile `key=` und einer Zeile `secret=`.
 
@@ -43,17 +43,18 @@ Klicken Sie auf der Benutzerseite unter **API-Schlüssel** auf **+**: Eine Datei
 
 Öffnen Sie in Gladys **Integrationen > OPNsense**, installieren Sie sie und füllen Sie aus:
 
-| Feld                      | Was eingeben                                                                                         |
-| ------------------------- | ---------------------------------------------------------------------------------------------------- |
-| Adresse von OPNsense      | Die Adresse der Weboberfläche, zum Beispiel `https://192.168.1.1` (mit Port, wenn er nicht 443 ist). |
-| API-Schlüssel             | Die Zeile `key=` von `key.txt`.                                                                      |
-| API-Geheimnis             | Die Zeile `secret=` von `key.txt`. Es wird nie wieder angezeigt und nie in die Logs geschrieben.     |
-| Zertifikat prüfen         | Mit dem selbstsignierten Zertifikat von OPNsense nicht ankreuzen; mit einem gültigen ankreuzen.      |
-| Leseintervall             | 10 bis 300 Sekunden, standardmäßig 30.                                                               |
-| Angebotene Netzwerkgeräte | Die im Erkennungsbildschirm angebotenen Geräte: die mit einem Namen (Standard), alle oder keine.     |
-| Abwesenheitsverzögerung   | Minuten ohne Antwort, bevor ein Gerät abwesend ist, standardmäßig 5.                                 |
-| Kategorie der Regeln      | Die Firewall-Regeln dieser Kategorie werden zu Schaltern (`gladys` standardmäßig; leer: keine).      |
-| Sprache der Texte         | Sprache der Namen, Zustände und Szenen-Zusammenfassungen; automatisch folgt Ihrem Dashboard.         |
+| Feld                      | Was eingeben                                                                                                                                                                                                                |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Adresse von OPNsense      | Die Adresse der Weboberfläche, zum Beispiel `https://192.168.1.1` (mit Port, wenn er nicht 443 ist).                                                                                                                        |
+| API-Schlüssel             | Die Zeile `key=` von `key.txt`.                                                                                                                                                                                             |
+| API-Geheimnis             | Die Zeile `secret=` von `key.txt`. Es wird nie wieder angezeigt und nie in die Logs geschrieben.                                                                                                                            |
+| Zertifikat prüfen         | Mit dem selbstsignierten Zertifikat von OPNsense nicht ankreuzen; mit einem gültigen ankreuzen.                                                                                                                             |
+| Leseintervall             | 10 bis 300 Sekunden, standardmäßig 30.                                                                                                                                                                                      |
+| Angebotene Netzwerkgeräte | Die im Erkennungsbildschirm angebotenen Geräte: die mit einem Namen (Standard), alle oder keine.                                                                                                                            |
+| Abwesenheitsverzögerung   | Minuten ohne Antwort, bevor ein Gerät abwesend ist, standardmäßig 5.                                                                                                                                                        |
+| Kategorie der Regeln      | Die Firewall-Regeln dieser Kategorie werden zu Schaltern (`gladys` standardmäßig; leer: keine).                                                                                                                             |
+| Gelesene Funktionen       | Standardmäßig alle angekreuzt. Entfernen Sie den Haken bei allem, was Sie nicht nutzen: OPNsense wird dafür nicht mehr abgefragt, und sein Protokoll zeigt keine „not accessible“-Zeile mehr für ein nicht erteiltes Recht. |
+| Sprache der Texte         | Sprache der Namen, Zustände und Szenen-Zusammenfassungen; automatisch folgt Ihrem Dashboard.                                                                                                                                |
 
 Klicken Sie auf **Verbindung testen**: Gladys zeigt den Namen und die Version Ihrer OPNsense.
 

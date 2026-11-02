@@ -79,7 +79,9 @@ docs/illustrations/     generated widget images (render.sh, gen.mjs, render.js)
   scene action) never fires a scene trigger.
 - **Optional endpoints** (WireGuard, Dnsmasq or Kea leases, os-wol, a
   privilege not granted) are skipped for an hour when they answer 404 or 403;
-  only the system time decides whether the round failed.
+  only the system time decides whether the round failed. A function unticked
+  in `features` is never asked; with the firewall unticked, the round fails
+  only when no read answered and one could not reach OPNsense.
 - **The container rootfs is read-only.** Write only under `/data`. Never log
   the API key nor its secret; never put them in an URL.
 - **Four languages.** Every user-facing text (manifest, runtime messages in

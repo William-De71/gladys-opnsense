@@ -490,3 +490,64 @@ test('an empty rule category offers no rule; a new address starts a new baseline
   assert.ok(gladys.fake.discoveredDevices.some((d) => d.external_id === RULE));
   assert.equal(app.watcher.fetchedAt(), NOW);
 });
+
+test('an unticked function is never asked to OPNsense', async (t) => {
+  // forum 11221: "not accessible" lines in the OPNsense log for unused functions.
+  const features = ['firewall', 'gateways', 'hosts'];
+  const { gladys, fake } = await startApp({ config: { ...CONFIG, features } });
+  t.after(() => gladys.fake.shutdown());
+  await gladys.fake.action(ACTIONS.TEST_CONNECTION);
+  await gladys.fake.scanRequest();
+  assert.equal(gladys.fake.connectionStatus.connected, true);
+  const asked = new Set(fake.calls.map((call) => call.path));
+  for (const path of [
+    'core/firmware/status',
+    'interfaces/overview/interfaces_info',
+    'diagnostics/traffic/interface',
+    'dnsmasq/leases/search',
+    'kea/leases4/search',
+    'wireguard/service/show',
+    'core/service/search',
+    'firewall/category/search_item',
+    'firewall/filter/search_rule',
+  ]) {
+    assert.ok(!asked.has(path), path);
+  }
+  const offered = gladys.fake.discoveredDevices.map((d) => d.external_id);
+  assert.ok(offered.includes(WAN_GW), 'the gateway');
+  assert.ok(offered.includes(PHONE), 'the hosts of the ARP table');
+  assert.ok(!offered.includes(WAN), 'no interface');
+  assert.ok(!offered.includes(RULE), 'no rule');
+});
+
+test('the firewall unticked: no probe, the round fails only when OPNsense cannot be reached', async (t) => {
+  const features = ['gateways', 'hosts'];
+  const { gladys, fake } = await startApp({ config: { ...CONFIG, features } });
+  t.after(() => gladys.fake.shutdown());
+  assert.equal(gladys.fake.connectionStatus.connected, true);
+  assert.match(gladys.fake.connectionStatus.message.fr, /^OPNsense : 2\/2 passerelle/);
+  assert.equal(fake.count('diagnostics/system/system_time'), 0);
+
+  // A refused privilege still proves the address and the key.
+  const refused = opnsense({ statuses: { 'routes/gateway/status': 403 } });
+  const second = await startApp({ config: { ...CONFIG, features: ['gateways'] }, fake: refused });
+  t.after(() => second.gladys.fake.shutdown());
+  assert.equal(second.gladys.fake.connectionStatus.connected, true);
+
+  const down = opnsense({
+    statuses: {
+      'routes/gateway/status': 'ECONNREFUSED',
+      'diagnostics/interface/get_arp': 'ECONNREFUSED',
+    },
+  });
+  const third = await startApp({ config: { ...CONFIG, features }, fake: down });
+  t.after(() => third.gladys.fake.shutdown());
+  assert.equal(third.gladys.fake.connectionStatus.connected, false);
+  assert.match(third.gladys.fake.connectionStatus.message.fr, /ne répond pas/);
+
+  const forbidden = opnsense({ statuses: { 'diagnostics/system/system_time': 403 } });
+  const fourth = await startApp({ config: { ...CONFIG, features }, fake: forbidden });
+  t.after(() => fourth.gladys.fake.shutdown());
+  const ack = await fourth.gladys.fake.action(ACTIONS.TEST_CONNECTION);
+  assert.match(ack.data.message.fr, /l’adresse et la clé d’API sont acceptées/);
+});

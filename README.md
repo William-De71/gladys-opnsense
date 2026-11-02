@@ -117,6 +117,7 @@ A change made by Gladys itself (a rule switched, a service restarted, a check ru
 | Network devices offered | with a name | with a name, all, none                                      |
 | Absence delay           | 5 min       | 1 to 60 min                                                 |
 | Category of the rules   | `gladys`    | Empty: no rule switch                                       |
+| Functions read          | all         | Unticked: never asked to OPNsense                           |
 | Language of the texts   | automatic   | Names, states and scene summaries                           |
 
 ## Usage
